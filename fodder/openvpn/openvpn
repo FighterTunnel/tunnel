@@ -7,7 +7,7 @@ MYIP2="s/xxxxxxxxx/$MYIP/g";
 function ovpn_install() {
     rm -rf /etc/openvpn
     mkdir -p /etc/openvpn
-    wget -O /etc/openvpn/vpn.zip "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/openvpn/vpn.zip" >/dev/null 2>&1 
+    wget -O /etc/openvpn/vpn.zip "https://raw.githubusercontent.com/FighterTunnel/tunnel/main/fodder/openvpn/vpn.zip" >/dev/null 2>&1 
     unzip -d /etc/openvpn/ /etc/openvpn/vpn.zip
     rm -f /etc/openvpn/vpn.zip
     chown -R root:root /etc/openvpn/server/easy-rsa/
