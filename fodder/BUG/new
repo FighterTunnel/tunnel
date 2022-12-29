@@ -1,0 +1,59 @@
+global
+        tune.ssl.default-dh-param 2048
+        tune.h2.initial-window-size 2147483647
+
+defaults
+        log global
+        mode    tcp
+        option  dontlognull
+        maxconn 5000
+        timeout connect 5s
+        timeout client  20s
+        timeout server  20s
+        timeout queue   30s
+        timeout http-request 5s
+        timeout http-keep-alive 15s
+
+frontend http
+        mode http
+        bind *:80
+        tcp-request inspect-delay 22ms
+        tcp-request content accept if HTTP
+        use_backend openresty_http if HTTP
+
+
+
+backend openresty_http
+        mode http
+        balance roundrobin
+ server website1 172.67.177.111:80
+ server website2 104.21.83.143:80
+ server website3 104.26.1.150:80
+ server website4 104.26.0.150:80
+ server website5 172.67.69.9:80
+ server website6 104.21.14.244:80
+ server website7 172.67.160.206:80
+ server website8 172.67.24.177:80
+ server website9 104.22.65.181:80
+ server website10 104.22.64.181:80
+ server website11 172.67.70.101:80
+ server website12 127.0.0.1:10010
+ #server website13 tsel.me/worryfree:80
+
+frontend ssl
+        mode tcp
+        bind *:443
+        tcp-request inspect-delay 22ms
+        tcp-request content accept if { req.ssl_hello_type 1 }
+        acl init req_ssl_sni -i teskan.ftvpn.net
+        use_backend FighterTunnel if init
+        default_backend FighterTunnel_web
+
+backend FighterTunnel
+        mode tcp
+        server localhost 127.0.0.1:10020
+
+backend FighterTunnel_web
+        mode tcp
+        balance roundrobin
+        server website4 127.0.0.1:22

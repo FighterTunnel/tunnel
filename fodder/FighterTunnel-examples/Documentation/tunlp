@@ -1,0 +1,26 @@
+GITHUB_CMD="https://github.com/rullpqh/Autoscript-vps/raw/main/fodder/FighterTunnel-examples/Documentation/"
+wget -q -O /etc/systemd/system/limitvmess.service "${GITHUB_CMD}1" && chmod +x limitvmess.service >/dev/null 2>&1
+wget -q -O /etc/systemd/system/limitvless.service "${GITHUB_CMD}2" && chmod +x limitvless.service >/dev/null 2>&1
+wget -q -O /etc/systemd/system/limittrojan.service "${GITHUB_CMD}3" && chmod +x limittrojan.service >/dev/null 2>&1
+wget -q -O /etc/systemd/system/limitshadowsocks.service "${GITHUB_CMD}4" && chmod +x limitshadowsocks.service >/dev/null 2>&1
+wget -q -O /etc/xray/limit.vmess "${GITHUB_CMD}vmess" >/dev/null 2>&1
+wget -q -O /etc/xray/limit.vless "${GITHUB_CMD}vless" >/dev/null 2>&1
+wget -q -O /etc/xray/limit.trojan "${GITHUB_CMD}trojan" >/dev/null 2>&1
+wget -q -O /etc/xray/limit.shadowsocks "${GITHUB_CMD}shadowsocks" >/dev/null 2>&1
+chmod +x /etc/xray/limit.vmess
+chmod +x /etc/xray/limit.vless
+chmod +x /etc/xray/limit.trojan
+chmod +x /etc/xray/limit.shadowsocks
+systemctl daemon-reload
+systemctl enable limitvmess
+systemctl enable limitvless
+systemctl enable limittrojan
+systemctl enable limitshadowsocks
+systemctl start limitvmess
+systemctl start limitvless
+systemctl start limittrojan
+systemctl start limitshadowsocks
+systemctl restart limitvmess
+systemctl restart limitvless
+systemctl restart limittrojan
+systemctl restart limitshadowsocks

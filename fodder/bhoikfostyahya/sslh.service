@@ -1,0 +1,16 @@
+[Unit]
+Description=SSLH Server
+Documentation=https://t.me/bhoikfost_yahya
+After=syslog.target network-online.target
+
+[Service]
+User=root
+NoNewPrivileges=true
+ExecStart=/usr/sbin/sslh --foreground --user root --listen 0.0.0.0:10011 --ssl 127.0.0.1:10012 --ssh 127.0.0.1:22 --http 127.0.0.1:10015
+Restart=on-failure
+RestartPreventExitStatus=23
+LimitNPROC=10000
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target

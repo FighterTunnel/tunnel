@@ -1,0 +1,381 @@
+{
+  "log" : {
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log",
+    "loglevel": "info"
+  },
+  "inbounds": [
+    {
+     "port": 10020,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [
+  {
+            "password":"1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojanxtls
+          }
+ ],
+        "decryption": "none",
+        "fallbacks": [{
+            "path": "/trojan-ws",
+            "dest": 10001
+          },
+          {
+            "path": "/vmess",
+            "dest": 10002
+          },
+          {
+            "path": "/vless",
+            "dest": 10003
+          },
+          {
+            "path": "/ss-ws",
+            "dest": 10005
+          },
+          {
+            "path": "/socks-ws",
+            "dest": 10006
+          },
+          {
+            "alpn": "h2",
+            "dest": 10007,
+            "xver": 0
+          },
+          {
+            "dest": 6443,
+            "xver": 0
+          },
+          {
+            "dest": 2053,
+            "xver": 0
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "xtls",
+        "xtlsSettings": {
+          "minVersion": "1.2",
+          "cipherSuites": "TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256:TLS_CHACHA20_POLY1305_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "certificates": [
+            {
+            "ocspStapling": 3600,
+              "certificateFile": "/etc/xray/xray.crt",
+              "keyFile": "/etc/xray/xray.key"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "port": 10001,
+      "listen": "127.0.0.1",
+      "protocol": "trojan",
+      "settings": {
+        "clients": [
+          {
+            "password":"1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojanws
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "none",
+        "wsSettings": {
+          "path": "/trojan-ws" 
+        }
+       }
+      },
+      {
+      "listen": "127.0.0.1",
+      "port": 6443,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [
+          {
+            "password":"1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojantcp
+          }
+         ]
+       },
+          "streamSettings": {
+            "network": "tcp",
+             "security": "none",
+             "tcpSettings": {
+               "acceptProxyProtocol": true
+                }
+            }
+        },
+     {
+     "port": 10003,
+     "listen": "127.0.0.1",
+     "protocol": "vless",
+      "settings": {
+          "decryption":"none",
+            "clients": [
+               {
+                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#vless
+             }
+          ]
+       },
+       "streamSettings":{
+         "network": "ws",
+            "wsSettings": {
+                "path": "/vless"
+          }
+        }
+     },
+     {
+     "port": 10002,
+     "listen": "127.0.0.1",
+     "protocol": "vmess",
+      "settings": {
+            "clients": [
+               {
+                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0",
+                 "alterId": 0
+#vmess
+             }
+          ]
+       },
+       "streamSettings":{
+         "network": "ws",
+            "wsSettings": {
+                "path": "/vmess"
+          }
+        }
+     },
+    {
+      "port": 10005,
+      "listen": "127.0.0.1",
+      "protocol": "shadowsocks",
+      "settings": {
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "FrA4ztbtXGmB/SvQ6PXAZg==",
+         "clients": [
+           {
+          "password": "oYeM+0BaRj8Gf2UN+l713A=="
+#ssws
+           }
+          ],
+          "network": "tcp,udp"
+       },
+       "streamSettings":{
+          "network": "ws",
+             "wsSettings": {
+               "path": "/ss-ws"
+           }
+        }
+     },
+ {
+       "port": 10006,
+       "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "auth": "password",
+             "accounts": [
+          {
+                 "user": "meki",
+                 "pass": "tembem"
+#socksws
+           }
+          ],
+         "level": 0,
+          "udp": true
+       },
+       "streamSettings":{
+          "network": "ws",
+             "wsSettings": {
+               "path": "/socks-ws"
+           }
+        }
+     },
+      {
+        "port": 12650,
+        "listen": "127.0.0.1", 
+        "protocol": "vless",
+        "settings": {
+         "decryption":"none",
+           "clients": [
+             {
+               "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#vlessgrpc
+             }
+          ]
+       },
+          "streamSettings":{
+             "network": "grpc",
+             "grpcSettings": {
+             "acceptProxyProtocol": true,
+                "serviceName": "vless-grpc"
+           }
+        }
+     },
+     {
+       "port":39758,
+       "listen": "127.0.0.1", 
+    "protocol": "vmess",
+       "settings": {
+        "clients": [
+               {
+                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0",
+                 "alterId": 0
+#vmessgrpc
+             }
+          ]
+       },
+       "streamSettings":{
+         "network": "grpc",
+            "grpcSettings": {
+            "acceptProxyProtocol": true,
+                "serviceName": "vmess-grpc"
+          }
+        }
+     },
+     {
+        "port": 14791,
+        "listen": "127.0.0.1", 
+        "protocol": "trojan",
+        "settings": {
+          "decryption":"none",
+             "clients": [
+               {
+                 "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojangrpc
+               }
+           ]
+        },
+         "streamSettings":{
+         "network": "grpc",
+           "grpcSettings": {
+           "acceptProxyProtocol": true,
+               "serviceName": "trojan-grpc"
+          }
+        }
+     },
+     {
+        "port": 29727,
+        "listen": "127.0.0.1", 
+        "protocol": "socks",
+        "settings": {
+          "auth": "password",
+             "accounts": [
+          {
+               "user": "fighter",
+               "pass": "tunnel"
+#socksgrpc
+           }
+          ],
+         "level": 0,
+          "udp": true
+       },
+       "streamSettings":{
+         "network": "grpc",
+           "grpcSettings": {
+           "acceptProxyProtocol": true,
+             "serviceName": "socks-grpc"
+           }
+        }
+     },
+   {
+    "port": 17173,
+    "listen": "127.0.0.1", 
+    "protocol": "shadowsocks",
+    "settings": {
+    "method": "2022-blake3-aes-128-gcm",
+    "password": "FrA4ztbtXGmB/SvQ6PXAZg==",
+        "clients": [
+          {
+             "password": "oYeM+0BaRj8Gf2UN+l713A=="
+#ssgrpc
+           }
+         ],
+           "network": "tcp,udp"
+      },
+    "streamSettings":{
+     "network": "grpc",
+        "grpcSettings": {
+        "acceptProxyProtocol": true,
+           "serviceName": "ss-grpc"
+          }
+       }
+    },
+  {
+      "listen": "127.0.0.1",
+      "port": 10000,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "127.0.0.1"
+      },
+      "tag": "api"
+    }
+  ],
+  "routing": {
+    "rules": [{
+        "type": "field",
+        "ip": [
+          "0.0.0.0/8",
+          "10.0.0.0/8",
+          "100.64.0.0/10",
+          "169.254.0.0/16",
+          "172.16.0.0/12",
+          "192.0.0.0/24",
+          "192.0.2.0/24",
+          "192.168.0.0/16",
+          "198.18.0.0/15",
+          "198.51.100.0/24",
+          "203.0.113.0/24",
+          "::1/128",
+          "fc00::/7",
+          "fe80::/10"
+        ],
+        "outboundTag": "block"
+      },
+      {
+        "inboundTag": [
+          "api"
+        ],
+        "outboundTag": "api",
+        "type": "field"
+      }
+    ]
+  },
+  "outbounds": [{
+      "protocol": "freedom",
+      "settings": {}
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "block"
+    }
+  ],
+  "stats": {},
+  "api": {
+    "services": [
+      "StatsService"
+    ],
+    "tag": "api"
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserDownlink": true,
+        "statsUserUplink": true
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true,
+      "statsOutboundUplink" : true,
+      "statsOutboundDownlink" : true
+    }
+  }
+}

@@ -1,0 +1,16 @@
+[Unit]
+Description=fightertunnel-Server
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+ExecStart=/usr/bin/fightertunnel --start-service
+User=root
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+

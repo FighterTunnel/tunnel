@@ -1,0 +1,378 @@
+#!/bin/bash
+
+cloudflare() {
+    apt update -y
+    apt install jq -y
+    mkdir -p /etc/xray
+    DOMEN="yha.my.id"
+    sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
+    domain="cloud-${sub}.yha.my.id"
+    echo -e "${domain}" >/etc/xray/domain
+    CF_ID="nuryahyamuhaimin@gmail.com"
+    CF_KEY="9dd2f30c099dbcf541cbd5c188d61ce060cf7"
+    set -euo pipefail
+    IP=$(wget -qO- ipinfo.io/ip)
+    echo -e "Updating DNS for ${domain}"
+    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${domain}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    if [[ "${#RECORD}" -le 10 ]]; then
+        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+            -H "X-Auth-Email: ${CF_ID}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+        --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}' | jq -r .result.id)
+    fi
+    
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+        -H "Content-Type: application/json" \
+    --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
+    
+    
+}
+
+cloudflare
+
+bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.6.1 >/dev/null 2>&1
+  cat >/etc/xray/config.json <<END
+{
+  "log" : {
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log",
+    "loglevel": "warning"
+  },
+  "inbounds": [
+      {
+      "listen": "127.0.0.1",
+      "port": 10000,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "127.0.0.1"
+      },
+      "tag": "api"
+    },
+   {
+     "listen": "127.0.0.1",
+     "port": "10001",
+     "protocol": "vless",
+      "settings": {
+          "decryption":"none",
+            "clients": [
+               {
+                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#vless
+             }
+          ]
+       },
+       "streamSettings":{
+         "network": "ws",
+            "wsSettings": {
+          }
+        }
+     },
+     {
+     "listen": "127.0.0.1",
+     "port": "10002",
+     "protocol": "vmess",
+      "settings": {
+            "clients": [
+               {
+                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0",
+                 "alterId": 0
+#vmess
+             }
+          ]
+       },
+       "streamSettings":{
+         "network": "ws",
+            "wsSettings": {
+          }
+        }
+     },
+    {
+      "listen": "127.0.0.1",
+      "port": "10003",
+      "protocol": "trojan",
+      "settings": {
+          "decryption":"none",
+           "clients": [
+              {
+                 "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojanws
+              }
+          ],
+         "udp": true
+       },
+       "streamSettings":{
+           "network": "ws",
+           "wsSettings": {
+            }
+         }
+     },
+    {
+         "listen": "127.0.0.1",
+        "port": "10004",
+        "protocol": "shadowsocks",
+        "settings": {
+           "clients": [
+           {
+           "method": "aes-128-gcm",
+          "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#ssws
+           }
+          ],
+          "network": "tcp,udp"
+       },
+       "streamSettings":{
+          "network": "ws",
+             "wsSettings": {
+           }
+        }
+     },
+      {
+        "listen": "127.0.0.1",
+        "port": "10005",
+        "protocol": "vless",
+        "settings": {
+         "decryption":"none",
+           "clients": [
+             {
+               "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#vlessgrpc
+             }
+          ]
+       },
+          "streamSettings":{
+             "network": "grpc",
+             "grpcSettings": {
+           }
+        }
+     },
+     {
+      "listen": "127.0.0.1",
+      "port": "10006",
+     "protocol": "vmess",
+      "settings": {
+            "clients": [
+               {
+                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0",
+                 "alterId": 0
+#vmessgrpc
+             }
+          ]
+       },
+       "streamSettings":{
+         "network": "grpc",
+            "grpcSettings": {
+          }
+        }
+     },
+     {
+        "listen": "127.0.0.1",
+        "port": "10007",
+        "protocol": "trojan",
+        "settings": {
+          "decryption":"none",
+             "clients": [
+               {
+                 "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojangrpc
+               }
+           ]
+        },
+         "streamSettings":{
+         "network": "grpc",
+           "grpcSettings": {
+         }
+      }
+   },
+   {
+    "listen": "127.0.0.1",
+    "port": "10008",
+    "protocol": "shadowsocks",
+    "settings": {
+        "clients": [
+          {
+             "method": "aes-128-gcm",
+             "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#ssgrpc
+           }
+         ],
+           "network": "tcp,udp"
+      },
+    "streamSettings":{
+     "network": "grpc",
+        "grpcSettings": {
+          }
+       }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "blocked"
+    }
+  ],
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "0.0.0.0/8",
+          "10.0.0.0/8",
+          "100.64.0.0/10",
+          "169.254.0.0/16",
+          "172.16.0.0/12",
+          "192.0.0.0/24",
+          "192.0.2.0/24",
+          "192.168.0.0/16",
+          "198.18.0.0/15",
+          "198.51.100.0/24",
+          "203.0.113.0/24",
+          "::1/128",
+          "fc00::/7",
+          "fe80::/10"
+        ],
+        "outboundTag": "blocked"
+      },
+      {
+        "inboundTag": [
+          "api"
+        ],
+        "outboundTag": "api",
+        "type": "field"
+      },
+      {
+        "type": "field",
+        "outboundTag": "blocked",
+        "protocol": [
+          "bittorrent"
+        ]
+      }
+    ]
+  },
+  "stats": {},
+  "api": {
+    "services": [
+      "StatsService"
+    ],
+    "tag": "api"
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserDownlink": true,
+        "statsUserUplink": true
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true,
+      "statsOutboundUplink" : true,
+      "statsOutboundDownlink" : true
+    }
+  }
+}
+END
+rm -rf /etc/systemd/system/xray.service.d
+  cat >/etc/systemd/system/xray.service <<EOF
+Description=Xray Service
+Documentation=https://github.com/xtls
+After=network.target nss-lookup.target
+
+[Service]
+User=www-data
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
+Restart=on-failure
+RestartPreventExitStatus=23
+LimitNPROC=10000
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
+
+
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg --yes
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+sudo apt update
+sudo apt install caddy
+systemctl enable caddy
+
+cat >/etc/caddy/Caddyfile <<-EOF
+$domain:443
+{
+    tls bhoikfostyahya@gmail.com
+    encode gzip
+
+
+
+    handle_path /vless {
+        reverse_proxy localhost:10001
+
+    }
+    import vmess
+    handle_path /vmess {
+        reverse_proxy localhost:10002
+    }
+
+    handle_path /trojan-ws {
+        reverse_proxy localhost:10003
+    }
+
+
+    handle_path /ss-ws {
+        reverse_proxy localhost:10004
+    }
+
+    handle {
+        reverse_proxy https://$domain {
+            trusted_proxies 0.0.0.0/0
+            header_up Host {upstream_hostport}
+        }
+    }
+}
+EOF
+
+
+cat >/etc/caddy/vmess <<-EOF
+
+@ws_path {
+path /worryfree
+path /xray
+path /yha
+path /*
+
+}
+
+
+handle @ws_path {
+    uri path_regexp /.* /
+    reverse_proxy localhost:10002
+}
+
+EOF
+
+
+
+

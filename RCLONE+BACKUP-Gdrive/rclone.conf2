@@ -1,0 +1,4 @@
+[dr]
+type = drive
+scope = drive
+token = {"access_token":"ya29.a0AfH6SMCiPm5jF8s8Z1sGskYBeZ91yGXekFlzmC3hJY5XOzYr7IppTfReMnUnFWe8C2XK8wckgCrMcInLXu60mFRRUJX5BxW--sQUgdQaV5OLj0Y8mGjeB7kP3DlHiO88AL3aGFF223vfDlP0m5DI9wv5mrdI","token_type":"Bearer","refresh_token":"1//0gKiowK8qVVbdCgYIARAAGBASNwF-L9Ir738hctQK6uK0m1LJcgDuMuYQ0ikpbQBUWUgVjepotfRd4xNI_Rqmb6Kmbta8m-3UyOQ","expiry":"2021-04-25T08:53:06.892461055+07:00"}

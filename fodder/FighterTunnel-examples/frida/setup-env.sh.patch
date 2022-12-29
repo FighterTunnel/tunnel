@@ -1,0 +1,47 @@
+--- ./releng/setup-env.sh.orig	2022-10-30 12:24:03.607549465 +0100
++++ ./releng/setup-env.sh	2022-10-30 12:25:00.977548248 +0100
+@@ -703,7 +703,7 @@
+     host_cxxlibs="c++_static c++abi"
+     case $host_arch in
+       x86)
+-        android_api=19
++        android_api=24
+         android_abi="x86"
+         android_target="i686-none-linux-android${android_api}"
+         android_clang_arch="i386"
+@@ -714,7 +714,7 @@
+         host_cxxlibs="$host_cxxlibs android_support"
+         ;;
+       x86_64)
+-        android_api=21
++        android_api=24
+         android_abi="x86_64"
+         android_target="x86_64-none-linux-android${android_api}"
+         android_clang_arch="x86_64"
+@@ -722,7 +722,7 @@
+         host_ldflags=""
+         ;;
+       arm)
+-        android_api=19
++        android_api=24
+         android_abi="armeabi-v7a"
+         android_target="armv7-none-linux-androideabi${android_api}"
+         android_clang_arch="arm"
+@@ -733,7 +733,7 @@
+         host_cxxlibs="$host_cxxlibs android_support"
+         ;;
+       arm64)
+-        android_api=21
++        android_api=24
+         android_abi="arm64-v8a"
+         android_target="aarch64-none-linux-android${android_api}"
+         android_clang_arch="aarch64"
+@@ -805,7 +805,7 @@
+     selected_nm="${android_toolroot}/bin/llvm-nm"
+     selected_ranlib="${android_toolroot}/bin/llvm-ranlib"
+     selected_strip="${android_toolroot}/bin/llvm-strip"
+-    strip_flags="--strip-all"
++    strip_flags="--strip-unneeded --preserve-dates"
+     selected_readelf="${android_toolroot}/bin/llvm-readelf"
+     selected_objcopy="${android_toolroot}/bin/llvm-objcopy"
+     selected_objdump="${android_toolroot}/bin/llvm-objdump"

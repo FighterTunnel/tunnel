@@ -1,0 +1,86 @@
+global
+        tune.ssl.default-dh-param 2048
+        tune.h2.initial-window-size 2147483647
+
+defaults
+        log global
+        mode    tcp
+        option  dontlognull
+        maxconn 5000
+        timeout connect 1s
+        timeout client  20s
+        timeout server  20s
+        timeout queue   30s
+        timeout http-request 1s
+        timeout http-keep-alive 1s
+
+frontend http
+        mode http
+        bind *:80
+        bind *:8080
+        bind *:2086
+        tcp-request inspect-delay 1ms
+        option forwardfor header X-Real-IP
+        http-request set-header X-Real-IP %[src]
+        tcp-request content accept if { req.payload(0,3) -m found }
+        tcp-request content accept if WAIT_END 
+        tcp-request content accept if { req.ssl_hello_type 1 }
+        tcp-request content accept if HTTP
+        use_backend openresty_http if HTTP
+        default_backend sshws
+
+
+backend sshws
+        mode http
+        server sshws 127.0.0.1:22 check
+
+backend openresty_http
+        mode http
+        server http1   127.0.0.1:18020 send-proxy check
+#       server http2   127.0.0.1:18030 send-proxy check
+#       server http3   172.67.177.111:80 send-proxy check
+#       server http4   104.21.83.143:80 send-proxy check
+#       server http5   104.26.1.150:80 send-proxy check
+#       server http6   104.26.0.150:80 send-proxy check
+#       server http7   172.67.69.9:80 send-proxy check
+#       server http8   104.21.14.244:80 send-proxy check
+#       server http9   172.67.160.206:80 send-proxy check
+#       server http10  172.67.24.177:80 send-proxy check
+#       server http11  104.22.65.181:80 send-proxy check
+#       server http12  104.22.64.181:80 send-proxy check
+#       server http13  172.67.70.101:80 send-proxy check
+#       server http14  127.0.0.1:10010 send-proxy check
+#       server http15  104.18.20.226:80 send-proxy check
+
+frontend ssl
+        mode tcp
+        bind 0.0.0.0:80
+        bind 0.0.0.0:443
+        bind *:443 tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
+        option forwardfor header X-Real-IP
+        http-request set-header X-Real-IP %[src]
+        tcp-request inspect-delay 1s
+        tcp-request content accept if { req.payload(0,11) -m found }
+        tcp-request content accept if WAIT_END 
+        tcp-request content accept if { req.ssl_hello_type 1 }
+#       acl web req.payload(0,3) -m found
+        acl web req_ssl_sni -i xxx
+        acl is_ssh req.payload(0,7) -m bin 5353482d322e30        
+        use_backend FighterTunnel  if web
+        use_backend ssh if is_ssh
+        default_backend FighterTunnel_web2
+
+backend FighterTunnel 
+        mode tcp
+        server localhost 127.0.0.1:443 check
+
+backend FighterTunnel_web2
+        mode tcp
+        balance roundrobin
+        server website1 127.0.0.1:10030 send-proxy check
+        server website2 127.0.0.1:10040 send-proxy check
+        server website3 127.0.0.1:1194 check
+
+backend ssh
+        mode tcp
+        server website4 127.0.0.1:22 check

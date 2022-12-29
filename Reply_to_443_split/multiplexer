@@ -1,0 +1,64 @@
+apt install sslh
+apt install nginx nginx-extras
+
+ nano /etc/default/sslh
+
+## --------------------- file contents -------------------------
+# Default options for sslh initscript
+# sourced by /etc/init.d/sslh
+
+# binary to use: forked (sslh) or single-thread (sslh-select) version
+# systemd users: don't forget to modify /lib/systemd/system/sslh.service
+DAEMON=/usr/sbin/sslh
+
+RUN=yes
+DAEMON_OPTS="--user sslh --listen <dedicated-ip>:443 --openvpn <dedicated-ip>:1194 --anyprot <dedicated-ip>:4443 --transparent --pidfile /var/run/sslh/sslh.pid"
+----------------------------------------------
+
+nano /usr/local/sbin/sslh-transparent
+
+## --------------------- file contents -------------------------
+#!/bin/bash
+iptables -t mangle -N SSLH
+iptables -t mangle -A OUTPUT --protocol tcp --out-interface <your-interface> --sport 4443 --jump SSLH
+iptables -t mangle -A OUTPUT --protocol tcp --out-interface <your-interface> --sport 1194 --jump SSLH
+iptables -t mangle -A SSLH --jump MARK --set-mark 0x1
+iptables -t mangle -A SSLH --jump ACCEPT
+ip rule add fwmark 0x1 lookup 100
+ip route add local 0.0.0.0/0 dev lo table 100
+ip6tables -t mangle -N SSLH
+ip6tables -t mangle -A OUTPUT --protocol tcp --out-interface ens3 --sport 4443 --jump SSLH
+ip6tables -t mangle -A OUTPUT --protocol tcp --out-interface ens3 --sport 1194 --jump SSLH
+ip6tables -t mangle -A SSLH --jump MARK --set-mark 0x1
+ip6tables -t mangle -A SSLH --jump ACCEPT
+ip -6 rule add fwmark 0x1 lookup 100
+ip -6 route add local ::/0 dev lo table 100
+----------------------------------------------
+
+chmod +x /usr/local/sbin/sslh-transparent
+
+nano /etc/systemd/system/sslh-transparent.service
+
+## --------------------- file contents -------------------------
+[Unit]
+Description=sslh transparent (see /usr/local/sbin/ssl-transparent)
+Wants=network-online.target
+After=network-online.target
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/sslh-transparent
+[Install]
+WantedBy=multi-user.target
+## ----------------------------------------------
+
+systemctl daemon-reload
+systemctl start sslh-transparent
+systemctl enable sslh-transparent
+systemctl enable sslh
+
+# useful commands
+## get network interface for ssl-h-transparent file and change <your-interface> to <dedicated-ip> network interface name.
+ifconfig -a
+
+## test command
+sslh -p <dedicated-ip>:443 --openvpn <dedicated-ip>:1194 --anyprot <dedicated-ip>:4443 --transparent

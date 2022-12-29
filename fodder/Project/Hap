@@ -1,0 +1,54 @@
+global
+        tune.ssl.default-dh-param 2048
+        tune.h2.initial-window-size 2147483647
+
+defaults
+        log global
+        mode    tcp
+        option  dontlognull
+        maxconn 5000
+        timeout connect 5s
+        timeout client  20s
+        timeout server  20s
+        timeout queue   30s
+        timeout http-request 5s
+        timeout http-keep-alive 1s
+
+frontend http
+        mode http
+        bind *:80
+        tcp-request inspect-delay 22ms
+        tcp-request content accept if HTTP
+        use_backend openresty_http if HTTP
+
+backend openresty_http
+        mode http
+        balance roundrobin
+        server http1 127.0.0.1:18020
+        server http2 127.0.0.1:18030
+       #server http3 127.0.0.1:18040
+       #server http4 104.22.65.181:80
+
+frontend ssl
+        mode tcp
+        #bind *:443 #tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
+        bind 0.0.0.0:443 tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
+        tcp-request content accept if { req.ssl_hello_type 1 }
+        use_backend FighterTunnel  if { ssl_fc_alpn -i h2 }
+        tcp-request inspect-delay 100ms
+        tcp-request content accept if { req.payload(0,3) -m found }
+        tcp-request content accept if WAIT_END 
+        acl is_ssh req.payload(0,3) -m bin 535348 
+        acl have_payload req.payload(0,3) -m found
+        use_backend FighterTunnel_web2 if is_ssh
+        default_backend FighterTunnel_web2
+
+backend FighterTunnel #Nginx
+        mode tcp
+        server localhost 127.0.0.1:10020
+
+backend FighterTunnel_web2
+        mode tcp
+        balance roundrobin
+        server website1 127.0.0.1:10030
+        server website4 127.0.0.1:22

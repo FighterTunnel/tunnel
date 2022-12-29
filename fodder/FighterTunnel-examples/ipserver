@@ -1,0 +1,80 @@
+#!/bin/bash
+# ALL TRAFIC IPTABLES
+CMD=$(ip -o $CMD -4 route show to default | awk '{print $5}');
+iptables -t nat -I PREROUTING -i eth0 -p udp --dport 53 -j REDIRECT --to-ports 5300
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 88 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 99 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 169 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 109 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 143 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 441 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 442 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 444 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 2269 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 3369 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10000 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10001 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10002 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10003 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10004 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10005 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10006 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10007 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10008 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10011 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 3128 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 80 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 88 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 99 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 169 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 109 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 143 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 441 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 442 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 443 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 444 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 2269 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 3369 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10000 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10001 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10002 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10003 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10004 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10005 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10006 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10007 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10008 -j ACCEPT
+#iptables -I INPUT -m state --state NEW -m udp -p udp --dport 10011 -j ACCEPT
+iptables -A FORWARD -m string --algo bm --string "BitTorrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "BitTorrent protocol" -j DROP
+iptables -A FORWARD -m string --algo bm --string "peer_id=" -j DROP
+iptables -A FORWARD -m string --algo bm --string ".torrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "announce.php?passkey=" -j DROP
+iptables -A FORWARD -m string --algo bm --string "torrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "announce" -j DROP
+iptables -A FORWARD -m string --algo bm --string "info_hash" -j DROP
+iptables -A FORWARD -m string --algo bm --string "/default.ida?" -j DROP
+iptables -A FORWARD -m string --algo bm --string ".exe?/c+dir" -j DROP
+iptables -A FORWARD -m string --algo bm --string ".exe?/c_tftp" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "peer_id" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "BitTorrent" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "BitTorrent protocol" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "bittorrent-announce" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "announce.php?passkey=" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "find_node" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "info_hash" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "get_peers" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "announce" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "announce_peers" -j DROP
+iptables -t nat -I POSTROUTING -s 10.6.0.0/24 -o $CMD -j MASQUERADE
+iptables -t nat -I POSTROUTING -s 10.7.0.0/24 -o $CMD -j MASQUERADE
+iptables -I INPUT -p udp --dport 5300 -j ACCEPT
+iptables-save >/etc/iptables/rules.v4 >/dev/null 2>&1
+iptables-save >/etc/iptables.up.rules >/dev/null 2>&1
+netfilter-persistent save >/dev/null 2>&1
+netfilter-persistent reload >/dev/null 2>&1
+systemctl enable iptables >/dev/null 2>&1 
+systemctl start iptables >/dev/null 2>&1 
+systemctl restart iptables >/dev/null 2>&1 

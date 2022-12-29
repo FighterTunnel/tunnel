@@ -1,0 +1,53 @@
+cat >/etc/caddy/Caddyfile <<-EOF
+$domain:443
+{
+    tls bhoikfostyahya@gmail.com
+    encode gzip
+
+
+
+    handle_path /vless {
+        reverse_proxy localhost:10001
+
+    }
+    import vmess
+    handle_path /vmess {
+        reverse_proxy localhost:10002
+    }
+
+    handle_path /trojan-ws {
+        reverse_proxy localhost:10003
+    }
+
+
+    handle_path /ss-ws {
+        reverse_proxy localhost:10004
+    }
+
+    handle {
+        reverse_proxy https://$domain {
+            trusted_proxies 0.0.0.0/0
+            header_up Host {upstream_hostport}
+        }
+    }
+}
+EOF
+
+
+cat >/etc/caddy/vmess <<-EOF
+
+@ws_path {
+path /worryfree
+path /xray
+path /yha
+path /*
+
+}
+
+
+handle @ws_path {
+    uri path_regexp /.* /
+    reverse_proxy localhost:10002
+}
+
+EOF

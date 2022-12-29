@@ -1,0 +1,16 @@
+[Unit]
+Description=UDP 7100
+Documentation=https://t.me/bhoikfost_yahya
+After=syslog.target network-online.target
+
+[Service]
+User=root
+NoNewPrivileges=true
+ExecStart=/usr/bin/badvpn --listen-addr 127.0.0.1:7100 --max-clients 500
+Restart=on-failure
+RestartPreventExitStatus=23
+LimitNPROC=10000
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target

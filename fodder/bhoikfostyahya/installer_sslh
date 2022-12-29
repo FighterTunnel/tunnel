@@ -1,0 +1,6 @@
+apt-get update
+cat << EOF | sudo debconf-set-selections
+# Run sslh:
+sslh    sslh/inetd_or_standalone        select  standalone
+EOF
+apt install sslh -y

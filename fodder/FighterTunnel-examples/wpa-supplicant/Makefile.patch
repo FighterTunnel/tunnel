@@ -1,0 +1,34 @@
+diff --git a/wpa_supplicant/Makefile b/wpa_supplicant/Makefile
+index cb66def..e70d74b 100644
+--- a/wpa_supplicant/Makefile
++++ b/wpa_supplicant/Makefile
+@@ -30,9 +30,9 @@ LIBS_p := $(LIBS)
+ endif
+ endif
+ 
+-export LIBDIR ?= /usr/local/lib
+-export INCDIR ?= /usr/local/include
+-export BINDIR ?= /usr/local/sbin
++export LIBDIR ?= $(PREFIX)/lib/
++export INCDIR ?= $(PREFIX)/include/
++export BINDIR ?= $(PREFIX)/bin/
+ PKG_CONFIG ?= pkg-config
+ 
+ CFLAGS += $(EXTRA_CFLAGS)
+@@ -147,16 +147,6 @@ endif
+ OBJS += ../src/utils/$(CONFIG_ELOOP).o
+ OBJS_c += ../src/utils/$(CONFIG_ELOOP).o
+ 
+-ifndef CONFIG_OSX
+-ifeq ($(CONFIG_ELOOP), eloop)
+-# Using glibc < 2.17 requires -lrt for clock_gettime()
+-# OS X has an alternate implementation
+-LIBS += -lrt
+-LIBS_c += -lrt
+-LIBS_p += -lrt
+-endif
+-endif
+-
+ ifdef CONFIG_ELOOP_POLL
+ CFLAGS += -DCONFIG_ELOOP_POLL
+ endif
