@@ -249,3 +249,121 @@
     }
   }
 }
+{
+  "outbounds": [
+    {
+      "protocol": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      },
+      "settings": {
+        "domainStrategy": "UseIPv4"
+      },
+      "protocol": "freedom",
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "blackhole"
+    },
+    {
+      "settings": {
+        "servers": [
+          {
+            "port": 10000,
+            "address": "127.0.0.1"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "none"
+      },
+      "protocol": "socks",
+      "tag": "out"
+    }
+  ],
+  "log": {
+    "loglevel": "warning"
+  },
+  "dns": {
+    "hosts": {
+      "dns.google": "8.8.8.8",
+      "dns.pub": "119.29.29.29",
+      "dns.alidns.com": "223.5.5.5",
+      "geosite:category-ads-all": "127.0.0.1"
+    },
+    "servers": [
+      {
+        "address": "https://1.1.1.1/dns-query",
+        "domains": ["geosite:geolocation-!cn"],
+        "expectIPs": ["geoip:!cn"]
+      },
+      "8.8.8.8",
+      {
+        "address": "114.114.114.114",
+        "port": 53,
+        "domains": ["geosite:cn", "geosite:category-games@cn"],
+        "expectIPs": ["geoip:cn"],
+        "skipFallback": true
+      },
+      {
+        "address": "localhost",
+        "skipFallback": true
+      }
+    ]
+  },
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "Reject",
+        "domain": ["geosite:category-ads-all"]
+      },
+      {
+        "type": "field",
+        "outboundTag": "Direct",
+        "domain": [
+          "geosite:private",
+          "geosite:apple-cn",
+          "geosite:google-cn",
+          "geosite:tld-cn",
+          "geosite:category-games@cn"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "Proxy",
+        "domain": ["geosite:geolocation-!cn"]
+      },
+      {
+        "type": "field",
+        "outboundTag": "Direct",
+        "domain": ["geosite:cn"]
+      },
+      {
+        "type": "field",
+        "outboundTag": "Proxy",
+        "network": "tcp,udp"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "port": 10000,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "port": 53,
+        "network": "udp",
+        "address": "1.1.1.1"
+      },
+      "tag": "dns-in",
+      "listen": "127.0.0.1"
+    }
+  ]
+}
