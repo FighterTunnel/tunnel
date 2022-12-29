@@ -38,8 +38,8 @@ echo "net.ipv4.tcp_congestion_control=bbrplus" >>/etc/sysctl.conf
 github="raw.githubusercontent.com/chiakge/Linux-NetSpeed/master"
 kernel_version="4.14.129-bbrplus"
 mkdir bbrplus && cd bbrplus
-wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/x64/linux-headers-${kernel_version}.deb
-wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/x64/linux-image-${kernel_version}.deb
+wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/x64/linux-headers-${kernel_version}.deb >/dev/null 2>&1 
+wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/x64/linux-image-${kernel_version}.deb >/dev/null 2>&1
 dpkg -i linux-headers-${kernel_version}.deb
 dpkg -i linux-image-${kernel_version}.deb
 cd .. && rm -rf bbrplus
