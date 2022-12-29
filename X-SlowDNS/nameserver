@@ -1,5 +1,5 @@
 #!/bin/sh
-GIT_CMD="https://github.com/rullpqh/Autoscript-vps/raw/main/"
+GIT_CMD="https://github.com/FighterTunnel/tunnel/raw/main/"
 ns_domain_cloudflare() {
 	DOMAIN="slowdns.app"
 	DAOMIN=$(cat /etc/xray/domain)
