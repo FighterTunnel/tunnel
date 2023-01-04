@@ -3,7 +3,7 @@ export DEBIAN_FRONTEND=noninteractive
 OS=`uname -m`;
 MYIP=$(wget -qO- ipinfo.io/ip);
 MYIP2="s/xxxxxxxxx/$MYIP/g";
-
+apt-get install tmux -y
 function ovpn_install() {
     rm -rf /etc/openvpn
     mkdir -p /etc/openvpn
