@@ -1,13 +1,13 @@
 #!/bin/sh
 GIT_CMD="https://github.com/FighterTunnel/tunnel/raw/main/"
 ns_domain_cloudflare() {
-	DOMAIN="ftvpn.me"
+	DOMAIN="slowdns.app"
 	DAOMIN=$(cat /etc/xray/domain)
 	SUB=$(tr </dev/urandom -dc a-z0-9 | head -c6)
-	SUB_DOMAIN=${SUB}."ftvpn.me"
+	SUB_DOMAIN=${SUB}."slowdns.app"
 	NS_DOMAIN=dns.${SUB_DOMAIN}
-	CF_ID=bhoikfostyahya@gmail.com
-        CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
+	CF_ID=nuryahyamuhaimin@gmail.com
+        CF_KEY=9dd2f30c099dbcf541cbd5c188d61ce060cf7
 	set -euo pipefail
 	IP=$(wget -qO- ipinfo.io/ip)
 	echo "Updating DNS NS for ${NS_DOMAIN}..."
