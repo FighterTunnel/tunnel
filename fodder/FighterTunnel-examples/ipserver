@@ -1,7 +1,6 @@
 #!/bin/bash
 # ALL TRAFIC IPTABLES
 CMD=$(ip -o $CMD -4 route show to default | awk '{print $5}');
-#iptables -t nat -I PREROUTING -i eth0 -p udp --dport 53 -j REDIRECT --to-ports 5300
 #iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
 #iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 88 -j ACCEPT
 #iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 99 -j ACCEPT
@@ -71,6 +70,7 @@ iptables -A FORWARD -m string --algo kmp --string "announce_peers" -j DROP
 iptables -t nat -I POSTROUTING -s 10.6.0.0/24 -o $CMD -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 10.7.0.0/24 -o $CMD -j MASQUERADE
 iptables -I INPUT -p udp --dport 5300 -j ACCEPT
+iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
 echo 1 > /proc/sys/net/ipv4/ip_forward
 sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
 iptables-save >/etc/iptables/rules.v4 >/dev/null 2>&1
