@@ -5,7 +5,7 @@ ns_domain_cloudflare() {
 	DAOMIN=$(cat /etc/xray/domain)
 	SUB=$(tr </dev/urandom -dc a-z0-9 | head -c6)
 	SUB_DOMAIN=${SUB}."slowdns.app"
-	NS_DOMAIN=ns.${SUB_DOMAIN}
+	NS_DOMAIN=dns.${SUB_DOMAIN}
 	CF_ID=nuryahyamuhaimin@gmail.com
         CF_KEY=9dd2f30c099dbcf541cbd5c188d61ce060cf7
 	set -euo pipefail
