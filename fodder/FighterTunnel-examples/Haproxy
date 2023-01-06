@@ -1,41 +1,41 @@
-global
-    log /dev/log local0
-    log /dev/log local1 notice
-    chroot /var/lib/haproxy
-    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-    stats timeout 30s
-    user haproxy
-    group haproxy
-    daemon
-    ca-base /etc/ssl/certs
-    crt-base /etc/ssl/private
-
-
-    ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
-    ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-    ssl-default-bind-options no-sslv3 no-tlsv10 no-tlsv11
-    tune.ssl.default-dh-param 2048
-
+global       
+        log /dev/log local0
+        log /dev/log local1 notice
+        chroot /var/lib/haproxy
+        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+        stats timeout 30s
+        user haproxy
+        group haproxy    
+        ca-base /etc/ssl/certs
+        crt-base /etc/ssl/private
+        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+        ssl-default-bind-options no-sslv3 no-tlsv10 no-tlsv11
+        tune.ssl.default-dh-param 2048
+        tune.h2.initial-window-size 2147483647
+        maxconn 32768
+        log /dev/log local0 info 
+        user haproxy
+        group haproxy 
+        pidfile /run/haproxy.pid
+        daemon
+        
 defaults
-    log global
-    mode tcp
-    option dontlognull
-    timeout connect 5s
-    timeout client  300s
-    timeout server  300s
+        log global
+        mode tcp
+        option dontlognull
+        timeout connect 5s
+        timeout client  300s
+        timeout server  300s
 
 frontend http
         mode http
         bind *:80 tfo
         bind *:8080 tfo
         bind *:2086 tfo
-        tcp-request inspect-delay 5s
+#       tcp-request inspect-delay 100ms
         option forwardfor header X-Real-IP
         http-request set-header X-Real-IP %[src]
-        tcp-request content accept if { req.payload(0,3) -m found }
-        tcp-request content accept if WAIT_END 
-        tcp-request content accept if { req.ssl_hello_type 1 }
-        tcp-request content accept if HTTP
         use_backend openresty_http if HTTP
         default_backend sshws
 
@@ -67,7 +67,7 @@ frontend ssl
         bind 0.0.0.0:80 tfo
         bind 0.0.0.0:443 tfo
         bind *:443 tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
-        tcp-request inspect-delay 5s
+        tcp-request inspect-delay 100ms
         tcp-request content capture req.ssl_sni len 25
         tcp-request content accept if { req.ssl_hello_type 1 }
         acl web req_ssl_sni -i xxx
@@ -88,54 +88,107 @@ frontend ssl
 
 backend FighterTunnel 
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server localhost 127.0.0.1:443 check
 
 backend ft1
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft1 127.0.0.1:10001 check
 
 backend ft2
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft2 127.0.0.1:10002 check  
 
 backend ft3
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft3 127.0.0.1:10003 check  
 
 backend ft4
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft4 127.0.0.1:10004 check
 
 backend ft5
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft5 127.0.0.1:10005 check
 
 backend ft6
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft6 127.0.0.1:10006 check
 
 backend ft7
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft7 127.0.0.1:10007 check 
 
 backend ft8
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft8 127.0.0.1:10008 check
 
 backend ft9
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft9 127.0.0.1:10015 check
 
 backend ft10
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft10 127.0.0.1:10012 check
 
 backend ft11
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ftt11 127.0.0.1:10030 send-proxy check
         server ftt12 127.0.0.1:10040 send-proxy check
         server ftt13 127.0.0.1:1194 check
 
 backend ft12
         mode tcp
+	log			global
+	timeout connect		30000
+	timeout server		30000
+	retries			3
         server ft12 127.0.0.1:22 check
+
