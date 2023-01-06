@@ -1,6 +1,5 @@
 #!/bin/bash
 # ALL TRAFIC IPTABLES
-iptables-save > iptables.bak
 CMD=$(ip -o eth0 -4 route show to default | awk '{print $5}')
 iptables -t nat -I PREROUTING -i eth0 -p udp --dport 53 -j REDIRECT --to-ports 5300
 iptables -A FORWARD -m string --algo bm --string "BitTorrent" -j DROP
