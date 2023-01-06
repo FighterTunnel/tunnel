@@ -1,40 +1,32 @@
 #!/bin/bash
-ETH=$(ip -o $ETH -4 route show to default | awk '{print $5}');
-ipserver() {
-#    iptables -A INPUT -i eth0 -p tcp -m state --state NEW -m multiport --dports ssh,smtp,http,https -j ACCEPT
-#    iptables -A INPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-#    iptables -A OUTPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-#    iptables -A INPUT -p tcp -m multiport --dports 10012,10015,18020,10030,10040 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-#    iptables -A OUTPUT -p tcp -m multiport --dports 10012,10015,18020,10030,10040 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-#    iptables -A INPUT -p tcp -m multiport --dports 10000,10001,10002,10003,10004,10005,10006,10007,10008 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-#    iptables -A OUTPUT -p tcp -m multiport --dports 10000,10001,10002,10003,10004,10005,10006,10007,10008 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-    iptables -A FORWARD -m string --algo bm --string "BitTorrent" -j DROP
-    iptables -A FORWARD -m string --algo bm --string "BitTorrent protocol" -j DROP
-    iptables -A FORWARD -m string --algo bm --string "peer_id=" -j DROP
-    iptables -A FORWARD -m string --algo bm --string ".torrent" -j DROP
-    iptables -A FORWARD -m string --algo bm --string "announce.php?passkey=" -j DROP
-    iptables -A FORWARD -m string --algo bm --string "torrent" -j DROP
-    iptables -A FORWARD -m string --algo bm --string "announce" -j DROP
-    iptables -A FORWARD -m string --algo bm --string "info_hash" -j DROP
-    iptables -A FORWARD -m string --algo bm --string "/default.ida?" -j DROP
-    iptables -A FORWARD -m string --algo bm --string ".exe?/c+dir" -j DROP
-    iptables -A FORWARD -m string --algo bm --string ".exe?/c_tftp" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "peer_id" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "BitTorrent" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "BitTorrent protocol" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "bittorrent-announce" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "announce.php?passkey=" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "find_node" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "info_hash" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "get_peers" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "announce" -j DROP
-    iptables -A FORWARD -m string --algo kmp --string "announce_peers" -j DROP
-    iptables -t nat -I POSTROUTING -s 10.6.0.0/24 -o $ETH -j MASQUERADE
-    iptables -t nat -I POSTROUTING -s 10.7.0.0/24 -o $ETH -j MASQUERADE
-    iptables -I INPUT -p udp --dport 5300 -j ACCEPT
-    iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
-}
-ipserver
+# ALL TRAFIC IPTABLES
+CMD=$(ip -o eth0 -4 route show to default | awk '{print $5}')
+iptables -t nat -I PREROUTING -i eth0 -p udp --dport 53 -j REDIRECT --to-ports 5300
+iptables -A FORWARD -m string --algo bm --string "BitTorrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "BitTorrent protocol" -j DROP
+iptables -A FORWARD -m string --algo bm --string "peer_id=" -j DROP
+iptables -A FORWARD -m string --algo bm --string ".torrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "announce.php?passkey=" -j DROP
+iptables -A FORWARD -m string --algo bm --string "torrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "announce" -j DROP
+iptables -A FORWARD -m string --algo bm --string "info_hash" -j DROP
+iptables -A FORWARD -m string --algo bm --string "/default.ida?" -j DROP
+iptables -A FORWARD -m string --algo bm --string ".exe?/c+dir" -j DROP
+iptables -A FORWARD -m string --algo bm --string ".exe?/c_tftp" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "peer_id" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "BitTorrent" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "BitTorrent protocol" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "bittorrent-announce" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "announce.php?passkey=" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "find_node" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "info_hash" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "get_peers" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "announce" -j DROP
+iptables -A FORWARD -m string --algo kmp --string "announce_peers" -j DROP
+iptables -t nat -I POSTROUTING -s 10.6.0.0/24 -o eth0 -j MASQUERADE
+iptables -t nat -I POSTROUTING -s 10.7.0.0/24 -o eth0 -j MASQUERADE
+iptables -I INPUT -p udp --dport 5300 -j ACCEPT
+
 cat >/etc/rc.local <<-END
 		#!/bin/sh -e
 		# rc.local
