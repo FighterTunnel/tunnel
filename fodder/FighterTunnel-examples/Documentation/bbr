@@ -65,6 +65,7 @@ remove_all() {
 remove_all
 echo "net.core.default_qdisc=fq" >>/etc/sysctl.conf
 echo "net.ipv4.tcp_congestion_control=bbrplus" >>/etc/sysctl.conf
+echo "net.ipv4.ip_forward=1" >>/etc/sysctl.conf
 mkdir bbrplus && cd bbrplus
 wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/x64/linux-headers-${kernel_version}.deb >/dev/null 2>&1
 wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/x64/linux-image-${kernel_version}.deb >/dev/null 2>&1
