@@ -1,7 +1,6 @@
 #!/bin/bash
 # ALL TRAFIC IPTABLES
 ETH=$(ip -o $ETH -4 route show to default | awk '{print $5}');
-iptables -t nat -I PREROUTING -i eth0 -p udp --dport 53 -j REDIRECT --to-ports 5300
 iptables -A FORWARD -m string --algo bm --string "BitTorrent" -j DROP
 iptables -A FORWARD -m string --algo bm --string "BitTorrent protocol" -j DROP
 iptables -A FORWARD -m string --algo bm --string "peer_id=" -j DROP
@@ -26,6 +25,7 @@ iptables -A FORWARD -m string --algo kmp --string "announce_peers" -j DROP
 iptables -t nat -I POSTROUTING -s 10.6.0.0/24 -o $ETH -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 10.7.0.0/24 -o $ETH -j MASQUERADE
 iptables -I INPUT -p udp --dport 5300 -j ACCEPT
+iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
 iptables-save >/etc/iptables/rules.v4 >/dev/null 2>&1
 iptables-save >/etc/iptables.up.rules >/dev/null 2>&1
 netfilter-persistent save >/dev/null 2>&1
