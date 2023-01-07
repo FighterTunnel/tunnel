@@ -24,8 +24,6 @@ iptables -A FORWARD -m string --algo kmp --string "announce" -j DROP
 iptables -A FORWARD -m string --algo kmp --string "announce_peers" -j DROP
 iptables -t nat -I POSTROUTING -s 10.6.0.0/24 -o $ETH -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 10.7.0.0/24 -o $ETH -j MASQUERADE
-iptables -I INPUT -p udp --dport 5300 -j ACCEPT
-iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
 iptables-save >/etc/iptables/rules.v4 >/dev/null 2>&1
 iptables-save >/etc/iptables.up.rules >/dev/null 2>&1
 netfilter-persistent save >/dev/null 2>&1
