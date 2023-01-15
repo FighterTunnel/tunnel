@@ -24,9 +24,9 @@ defaults
         log global
         mode tcp
         option dontlognull
-        timeout connect 5s
-        timeout client  300s
-        timeout server  300s
+        timeout connect 24h
+        timeout client  24h
+        timeout server  24h
 
 frontend http
         mode http
@@ -67,7 +67,7 @@ frontend ssl
         bind 0.0.0.0:80 tfo
         bind 0.0.0.0:443 tfo
         bind *:443 tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
-        tcp-request inspect-delay 100ms
+        tcp-request inspect-delay 200ms
         tcp-request content capture req.ssl_sni len 25
         tcp-request content accept if { req.ssl_hello_type 1 }
         acl web req_ssl_sni -i xxx
