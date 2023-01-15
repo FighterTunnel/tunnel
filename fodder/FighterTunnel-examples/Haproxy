@@ -33,7 +33,7 @@ frontend http
         bind *:80 tfo
         bind *:8080 tfo
         bind *:2086 tfo
-#       tcp-request inspect-delay 100ms
+        tcp-request inspect-delay 100ms
         option forwardfor header X-Real-IP
         http-request set-header X-Real-IP %[src]
         use_backend openresty_http if HTTP
@@ -67,7 +67,7 @@ frontend ssl
         bind 0.0.0.0:80 tfo
         bind 0.0.0.0:443 tfo
         bind *:443 tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
-        tcp-request inspect-delay 200ms
+        tcp-request inspect-delay 100ms
         tcp-request content capture req.ssl_sni len 25
         tcp-request content accept if { req.ssl_hello_type 1 }
         acl web req_ssl_sni -i xxx
