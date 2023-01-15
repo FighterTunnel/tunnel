@@ -33,7 +33,7 @@ frontend http
         bind *:80 tfo
         bind *:8080 tfo
         bind *:2086 tfo
-#       tcp-request inspect-delay 100ms
+        tcp-request inspect-delay 100ms
         option forwardfor header X-Real-IP
         http-request set-header X-Real-IP %[src]
         use_backend openresty_http if HTTP
@@ -67,7 +67,7 @@ frontend ssl
         bind 0.0.0.0:80 tfo
         bind 0.0.0.0:443 tfo
         bind *:443 tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
-        tcp-request inspect-delay 200ms
+        tcp-request inspect-delay 100ms
         tcp-request content capture req.ssl_sni len 25
         tcp-request content accept if { req.ssl_hello_type 1 }
         acl web req_ssl_sni -i xxx
@@ -89,96 +89,96 @@ frontend ssl
 backend FighterTunnel 
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server localhost 127.0.0.1:443 check
 
 backend ft1
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft1 127.0.0.1:10001 check
 
 backend ft2
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft2 127.0.0.1:10002 check  
 
 backend ft3
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft3 127.0.0.1:10003 check  
 
 backend ft4
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft4 127.0.0.1:10004 check
 
 backend ft5
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft5 127.0.0.1:10005 check
 
 backend ft6
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft6 127.0.0.1:10006 check
 
 backend ft7
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft7 127.0.0.1:10007 check 
 
 backend ft8
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft8 127.0.0.1:10008 check
 
 backend ft9
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft9 127.0.0.1:10015 check
 
 backend ft10
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft10 127.0.0.1:10012 check
 
 backend ft11
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ftt11 127.0.0.1:10030 send-proxy check
         server ftt12 127.0.0.1:10040 send-proxy check
@@ -187,8 +187,8 @@ backend ft11
 backend ft12
         mode tcp
 	log			global
-	timeout connect		30000
-	timeout server		30000
+	timeout connect		24h
+	timeout server		24h
 	retries			3
         server ft12 127.0.0.1:22 check
 
