@@ -1,3 +1,4 @@
+#CONFIGURASI FIGHTERTUNNEL LOADBALANCER
 global       
     log /dev/log local0
     log /dev/log local1 notice
@@ -42,14 +43,19 @@ frontend ssl
     use_backend FTVPN  if { path_reg -i ^\/[a-z-A-Z-0-9_\.\-\:]* }
     acl this_payload payload(0,7) -m bin 5353482d322e30
     use_backend BOT_FTVPN if this_payload
-    use_backend  CHANNEL_FTVPN if HTTP
+    acl MAUNGAPAIN_BANG ssl_fc_alpn -i h2
+    use_backend GRUP_FTVPN if MAUNGAPAIN_BANG  
 
 backend FTVPN 
-    balance roundrobin
+    mode tcp
     server hencet-bau 127.0.0.1:1010 send-proxy
 
-backend CHANNEL_FTVPN
+backend GRUP_FTVPN 
     mode tcp
+    server hencet-baus 127.0.0.1:1013 send-proxy
+
+backend CHANNEL_FTVPN
+    balance roundrobin
     server nonok-bau 127.0.0.1:1194 check
     server itil-bau 127.0.0.1:1011 send-proxy
     server memek-bau 127.0.0.1:1012 send-proxy
