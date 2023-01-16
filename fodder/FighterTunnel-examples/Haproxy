@@ -1,4 +1,4 @@
-#CONFIGURASI FIGHTERTUNNEL LOADBALANCER
+#CONFIGURASI FIGHTERTUNNEL LOADBALANCER [ xxx ]
 global       
     log /dev/log local0
     log /dev/log local1 notice
@@ -39,12 +39,12 @@ frontend ssl
     tcp-request inspect-delay 100ms
     tcp-request content capture req.ssl_sni len 25
     tcp-request content accept if { req.ssl_hello_type 1 }
-    default_backend CHANNEL_FTVPN # xxx
+    default_backend CHANNEL_FTVPN 
     use_backend FTVPN  if { path_reg -i ^\/[a-z-A-Z-0-9_\.\-\:]* }
     acl this_payload payload(0,7) -m bin 5353482d322e30
     use_backend BOT_FTVPN if this_payload
-    acl MAUNGAPAIN_BANG ssl_fc_alpn -i h2
-    use_backend GRUP_FTVPN if MAUNGAPAIN_BANG  
+    acl grpc ssl_fc_alpn -i h2
+    use_backend GRUP_FTVPN if grpc  
 
 backend FTVPN 
     mode tcp
