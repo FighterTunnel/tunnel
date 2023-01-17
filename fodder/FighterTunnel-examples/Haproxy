@@ -4,7 +4,7 @@ global
     log /dev/log local1 notice
     chroot /var/lib/haproxy
     stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-    stats timeout 30s
+    stats timeout 24h
     user haproxy
     group haproxy    
     ca-base /etc/ssl/certs
@@ -45,8 +45,8 @@ frontend ssl
     use_backend FTVPN  if { path_reg -i ^\/[a-z-A-Z-0-9_\.\-\:]* }
     acl this_payload payload(0,7) -m bin 5353482d322e30
     use_backend BOT_FTVPN if this_payload
-    acl grpc ssl_fc_alpn -i h2
-    use_backend GRUP_FTVPN if grpc  
+    acl MAUNGAPAIN_BANG ssl_fc_alpn -i h2
+    use_backend GRUP_FTVPN if MAUNGAPAIN_BANG  
 
 backend FTVPN 
     mode tcp
