@@ -93,16 +93,21 @@ function cert_ovpn() {
     cat /etc/openvpn/server/ca.crt >> /etc/openvpn/tcp.ovpn
     echo '</ca>' >> /etc/openvpn/tcp.ovpn
     cp /etc/openvpn/tcp.ovpn /var/www/html/tcp.ovpn
-    echo '<ca>' >> /etc/openvpn/udp.ovpn
+    
+    echo '<ca>' >> /etc/openvpn/udp.ovpn   
     cat /etc/openvpn/server/ca.crt >> /etc/openvpn/udp.ovpn
     echo '</ca>' >> /etc/openvpn/udp.ovpn
     cp /etc/openvpn/udp.ovpn /var/www/html/udp.ovpn
+    
     echo '<ca>' >> /etc/openvpn/ws-ssl.ovpn
     cat /etc/openvpn/server/ca.crt >> /etc/openvpn/ws-ssl.ovpn
     echo '</ca>' >> /etc/openvpn/ws-ssl.ovpn
     cp /etc/openvpn/ws-ssl.ovpn /var/www/html/ws-ssl.ovpn
-    echo '</ca>' >> /etc/openvpn/ssl.ovpn
-    cp /etc/openvpn/ws-ssl.ovpn /var/www/html/ssl.ovpn
+    
+    echo '<ca>' >> /etc/openvpn/ssl.ovpn
+    cat /etc/openvpn/server/ca.crt >> /etc/openvpn/ws-ssl.ovpn
+    echo '</ca>' >> /etc/openvpn/ws-ssl.ovpn
+    cp /etc/openvpn/ssl.ovpn /var/www/html/ssl.ovpn
 }
 
 function install_ovpn() {
