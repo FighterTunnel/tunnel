@@ -105,8 +105,8 @@ function cert_ovpn() {
     cp /etc/openvpn/ws-ssl.ovpn /var/www/html/ws-ssl.ovpn
     
     echo '<ca>' >> /etc/openvpn/ssl.ovpn
-    cat /etc/openvpn/server/ca.crt >> /etc/openvpn/ws-ssl.ovpn
-    echo '</ca>' >> /etc/openvpn/ws-ssl.ovpn
+    cat /etc/openvpn/server/ca.crt >> /etc/openvpn/ssl.ovpn
+    echo '</ca>' >> /etc/openvpn/ssl.ovpn
     cp /etc/openvpn/ssl.ovpn /var/www/html/ssl.ovpn
 }
 
