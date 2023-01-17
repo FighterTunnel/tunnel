@@ -35,6 +35,8 @@ defaults
 frontend ssl
     mode tcp
     bind *:80 tfo
+    bind *:8080 tfo
+    bind *:2086 tfo
     bind *:443 tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
     tcp-request inspect-delay 100ms
     tcp-request content capture req.ssl_sni len 25
