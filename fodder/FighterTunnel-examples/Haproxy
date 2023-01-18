@@ -50,18 +50,19 @@ frontend ssl
 
 backend FTVPN 
     mode tcp
-    server hencet-bau 127.0.0.1:1010 send-proxy
+    balance roundrobin
+    server hencet-bau 127.0.0.1:1010 send-proxy check
+    server itil-bau 127.0.0.1:1011 send-proxy check
 
 backend GRUP_FTVPN 
     mode tcp
-    server hencet-baus 127.0.0.1:1013 send-proxy
+    server hencet-baus 127.0.0.1:1013 send-proxy check
 
 backend CHANNEL_FTVPN
     balance roundrobin
     server nonok-bau 127.0.0.1:1194 check
-    server itil-bau 127.0.0.1:1011 send-proxy
     server memek-bau 127.0.0.1:1012 send-proxy
 
 backend BOT_FTVPN
      mode tcp
-     server misv-bau 127.0.0.1:2222
+     server misv-bau 127.0.0.1:2222 check
