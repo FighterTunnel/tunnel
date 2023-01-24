@@ -1,20 +1,20 @@
 #CONFIGURASI FIGHTERTUNNEL LOADBALANCER [ xxx ]
 global       
     stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-    stats timeout 24h      
+    stats timeout 1d
 
     log /dev/log local0
     log /dev/log local1 notice
-    log /dev/log local0 info 
-
-    tune.h2.initial-window-size 2147483647    
+    log /dev/log local0 info
+    
+    tune.h2.initial-window-size 2147483647
     tune.ssl.default-dh-param 2048
 
-    pidfile /run/haproxy.pid    
-    chroot /var/lib/haproxy  
-       
+    pidfile /run/haproxy.pid
+    chroot /var/lib/haproxy
+
     user haproxy
-    group haproxy    
+    group haproxy
     daemon
 
     ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
@@ -22,19 +22,23 @@ global
     ssl-default-bind-options no-sslv3 no-tlsv10 no-tlsv11
 
     ca-base /etc/ssl/certs
-    crt-base /etc/ssl/private   
-
+    crt-base /etc/ssl/private
 
 defaults
-    log global
-    option  dontlognull
-    maxconn 5000
-    timeout connect 24h
-    timeout client 24h
-    timeout server  24h
-    timeout queue   24h
-    timeout http-request 24h
-    timeout http-keep-alive 24h
+	log	global
+	mode	http
+	option	httplog
+	option	dontlognull
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
+	errorfile 400 /etc/haproxy/errors/400.http
+	errorfile 403 /etc/haproxy/errors/403.http
+	errorfile 408 /etc/haproxy/errors/408.http
+	errorfile 500 /etc/haproxy/errors/500.http
+	errorfile 502 /etc/haproxy/errors/502.http
+	errorfile 503 /etc/haproxy/errors/503.http
+	errorfile 504 /etc/haproxy/errors/504.http
     
 frontend ssl
     mode tcp
@@ -46,28 +50,29 @@ frontend ssl
     bind *:8081-9999 tfo
     bind *:222-1000 tfo ssl crt /etc/haproxy/yha.pem alpn h2,http/1.1
 
-    tcp-request content accept if HTTP
-    tcp-request inspect-delay 300ms
-    tcp-request content capture req.ssl_sni len 25
+    tcp-request inspect-delay 120ms
+    tcp-request content capture req.ssl_sni len 100
     tcp-request content accept if { req.ssl_hello_type 1 }
-    
-    default_backend CHANNEL_FTVPN 
+    tcp-request content accept if WAIT_END
+    tcp-request content accept if HTTP
+
+    default_backend CHANNEL_FTVPN
     acl this_payload payload(0,7) -m bin 5353482d322e30
     acl MAUNGAPAIN_BANG ssl_fc_alpn -i h2
-    use_backend GRUP_FTVPN if MAUNGAPAIN_BANG  
+    use_backend GRUP_FTVPN if MAUNGAPAIN_BANG
     use_backend FTVPN  if { path_reg -i ^\/[a-z-A-Z-0-9_\.\-\:]* }
     use_backend BOT_FTVPN if this_payload
 
-backend FTVPN 
+backend FTVPN
     mode tcp
     balance roundrobin
     server hencet-bau 127.0.0.1:1010 send-proxy check
     server itil-bau 127.0.0.1:1011 send-proxy check
 
-backend GRUP_FTVPN 
+backend GRUP_FTVPN
     mode tcp
     server hencet-baus 127.0.0.1:1013 send-proxy check
-
+    
 backend CHANNEL_FTVPN
     balance roundrobin
     server nonok-bau 127.0.0.1:1194 check
