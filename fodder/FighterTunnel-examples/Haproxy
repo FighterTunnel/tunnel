@@ -39,11 +39,14 @@ defaults
     errorfile 502 /etc/haproxy/errors/502.http
     errorfile 503 /etc/haproxy/errors/503.http
     errorfile 504 /etc/haproxy/errors/504.http
-    
-frontend website
+
+frontend ssh
     bind *:30038 accept-proxy 
     default_backend AUTOSCRIPT
- 
+   
+backend AUTOSCRIPT 
+    server itil-bau 127.0.0.1:1011 send-proxy check
+
 frontend ssl
     mode tcp
     bind *:80 tfo
@@ -67,14 +70,13 @@ frontend ssl
     use_backend FTVPN  if { path_reg -i ^\/[a-z-A-Z-0-9_\.\-\:]* }
     use_backend BOT_FTVPN if this_payload
     use_backend SC_FTVPN if HTTP
-    
-backend SC_FTVPN
-    mode tcp
-    server itil-bau 127.0.0.1:30038 send-proxy check
 
 backend FTVPN
-    mode tcp
+    mode http
     server hencet-bau 127.0.0.1:1010 send-proxy check
+
+backend SC_FTVPN
+    server itil-bau 127.0.0.1:30038 send-proxy check
 
 backend GRUP_FTVPN
     mode tcp
@@ -86,8 +88,5 @@ backend CHANNEL_FTVPN
     server memek-bau 127.0.0.1:1012 send-proxy
 
 backend BOT_FTVPN
-    mode tcp
-    server misv-bau 127.0.0.1:2222 check
-     
-backend AUTOSCRIPT
-    server itil-bau 127.0.0.1:1011 send-proxy check
+     mode tcp
+     server misv-bau 127.0.0.1:2222 check
