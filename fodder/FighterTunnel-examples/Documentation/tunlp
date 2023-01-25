@@ -24,3 +24,5 @@ systemctl restart limitvmess
 systemctl restart limitvless
 systemctl restart limittrojan
 systemctl restart limitshadowsocks
+systemctl restart ssh
+systemctl restart sshd
