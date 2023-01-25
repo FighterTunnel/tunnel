@@ -40,7 +40,7 @@ defaults
     errorfile 503 /etc/haproxy/errors/503.http
     errorfile 504 /etc/haproxy/errors/504.http
     
- frontend website
+frontend website
     bind *:30038 accept-proxy 
     default_backend AUTOSCRIPT
  
@@ -74,7 +74,6 @@ backend SC_FTVPN
 
 backend FTVPN
     mode tcp
-    balance roundrobin
     server hencet-bau 127.0.0.1:1010 send-proxy check
 
 backend GRUP_FTVPN
