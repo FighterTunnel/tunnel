@@ -46,7 +46,7 @@ frontend ssh
     
 frontend multiport
     mode tcp
-    bind :222-1000
+    bind *:222-1000
     tcp-request inspect-delay 120ms
     tcp-request content accept if HTTP
     tcp-request content accept if { req.ssl_hello_type 1 }
