@@ -1,4 +1,4 @@
-#CONFIGURASI FIGHTERTUNNEL LOADBALANCER [ sg2.ftvpn.me ]
+#CONFIGURASI FIGHTERTUNNEL LOADBALANCER [ xxx ]
 global       
     stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
 
