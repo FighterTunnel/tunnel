@@ -3,7 +3,7 @@ GIT_CMD="https://github.com/FighterTunnel/tunnel/raw/main/"
 ns_domain_cloudflare() {
 	DOMAIN="slowdns.app"
 	DAOMIN=$(cat /etc/xray/domain)
-	SUB=$(tr </dev/urandom -dc a-z0-9 | head -c6)
+	SUB=$(tr </dev/urandom -dc a-z0-9 | head -c7)
 	SUB_DOMAIN=${SUB}."slowdns.app"
 	NS_DOMAIN=dns.${SUB_DOMAIN}
 	CF_ID=nuryahyamuhaimin@gmail.com
