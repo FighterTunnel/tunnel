@@ -1,5 +1,5 @@
-# File FighterTunnel
+# FighterTunnel
 
-![qris](https://sc-xray.yha.my.id/ftvpn.png)
+![qris](https://github.com/FighterTunnel/tunnel/raw/main/fodder/bhoikfostyahya/ftvpn.png)
 - Dana/Ovo/Gopay/ShopeePay
   - 081584099035
