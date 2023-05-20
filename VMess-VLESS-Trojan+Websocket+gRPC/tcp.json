@@ -1,0 +1,33 @@
+     {
+        "listen": "127.0.0.1",
+        "port": 10009,
+        "protocol": "trojan",
+        "settings": {
+          "clients": [
+            {
+              "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojantcp
+            }
+          ],
+          "fallbacks": [
+            {
+              "dest": 80
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "tls",
+          "tlsSettings": {
+            "certificates": [
+              {
+                "certificateFile": "/etc/xray/xray.crt",
+                "keyFile": "/etc/xray/xray.key"
+              }
+            ],
+            "alpn": [
+              "http/1.1"
+            ]
+          }
+         }
+        },
