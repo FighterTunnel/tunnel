@@ -219,6 +219,20 @@
         "type": "field"
       },
       {
+        "inboundTag": [
+          "dnsQuery"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "outboundTag": "direct",
+        "protocol": [
+          "bittorrent"
+        ],
+        "type": "field"
+      },
+      {
         "type": "field",
         "outboundTag": "block",       
         "ip": [
@@ -252,9 +266,19 @@
       },
       {
         "type": "field",
+        "outboundTag": "direct",
+        "ip": ["223.5.5.5/32", "119.29.29.29/32", "180.76.76.76/32", "114.114.114.114/32", "geoip:cn", "geoip:jp", "geoip:in", "geoip:private"]
+      },
+      {
+        "type": "field",
         "outboundTag": "reject",
         "domain": ["geosite:category-ads-all"]
-      }
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "network": "tcp,udp"
+      } 
     ]
   },
   "stats": {},
@@ -306,4 +330,5 @@
        ]
       }
     }
+
 
