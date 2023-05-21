@@ -200,46 +200,15 @@
   "outbounds": [
     {
       "protocol": "freedom",
-      "settings": {
-        "userLevel": 8
-      },
-      "streamSettings": {
-        "sockopt": {
-          "interface": "en0"
-        }
-      },
-      "tag": "direct"
+      "settings": {}
     },
     {
       "protocol": "blackhole",
-      "tag": "reject"
-    },
-    {
-      "protocol": "dns",
-      "proxySettings": {
-        "tag": "direct",
-        "transportLayer": true
-      },
-      "tag": "dnsOut"
+      "settings": {},
+      "tag": "blocked"
     }
   ],
-  "policy": {
-    "levels": {
-      "8": {
-        "bufferSize": 0,
-        "connIdle": 300,
-        "downlinkOnly": 1,
-        "handshake": 4,
-        "statsInboundUplink": true,
-        "statsInboundDownlink": true,
-        "statsOutboundUplink" : true,
-        "statsOutboundDownlink" : true,
-        "uplinkOnly": 1
-        }
-      }
-     },
-
-    "routing": {
+  "routing": {
     "domainStrategy": "AsIs",
     "rules": [
       {
@@ -250,18 +219,30 @@
         "type": "field"
       },
       {
+        "type": "field",
+        "outboundTag": "block",       
+        "ip": [
+          "0.0.0.0/8", "10.0.0.0/8", "100.64.0.0/10", "169.254.0.0/16", "172.16.0.0/12", "192.0.0.0/24", "192.0.2.0/24", "192.168.0.0/16", "198.18.0.0/15", "198.51.100.0/24", "203.0.113.0/24", "::1/128", "fc00::/7", "fe80::/10"]
+      },
+      {
         "inboundTag": [
-          "dnsQuery"
+          "api"
         ],
-        "outboundTag": "direct",
+        "outboundTag": "api",
         "type": "field"
       },
       {
-        "outboundTag": "direct",
+        "type": "field",
+        "outboundTag": "blocked",
         "protocol": [
           "bittorrent"
-        ],
-        "type": "field"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "proxy",
+        "ip": ["1.1.1.1/32", "1.0.0.1/32",
+          "8.8.8.8/32", "8.8.4.4/32", "geoip:us", "geoip:ca", "geoip:cloudflare", "geoip:cloudfront", "geoip:facebook", "geoip:fastly", "geoip:google", "geoip:netflix", "geoip:telegram", "geoip:yt", "geoip:twitter"]
       },
       {
         "type": "field",
@@ -271,59 +252,58 @@
       },
       {
         "type": "field",
-        "outboundTag": "direct",
-        "ip": ["223.5.5.5/32", "119.29.29.29/32", "180.76.76.76/32", "114.114.114.114/32", "geoip:cn", "geoip:jp", "geoip:in", "geoip:private"]
-      },
-      {
-        "type": "field",
-        "outboundTag": "direct",
-        "domain": ["geosite:private", "geosite:apple-cn", "geosite:google-cn", "geosite:tld-cn", "geosite:category-games@cn"]
-      },
-      {
-        "type": "field",
         "outboundTag": "reject",
         "domain": ["geosite:category-ads-all"]
-      },
-      {
-        "type": "field",
-        "outboundTag": "direct",
-        "network": "tcp,udp"
-      },
-      {
-        "type": "field",
-        "outboundTag": "proxy",
-        "ip": ["1.1.1.1/32", "1.0.0.1/32",
-          "8.8.8.8/32", "8.8.4.4/32", "geoip:us", "geoip:ca", "geoip:cloudflare", "geoip:cloudfront", "geoip:facebook", "geoip:fastly", "geoip:google", "geoip:netflix", "geoip:telegram", "geoip:yt", "geoip:twitter"]
       }
-     ]
+    ]
+  },
+  "stats": {},
+  "api": {
+    "services": [
+      "StatsService"
+    ],
+    "tag": "api"
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserDownlink": true,
+        "statsUserUplink": true
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true,
+      "statsOutboundUplink" : true,
+      "statsOutboundDownlink" : true
+     }
     },
     "dns": {
-    "hosts": {
-      "dns.google": "8.8.8.8",
-      "dns.pub": "119.29.29.29",
-      "dns.alidns.com": "223.5.5.5",
-      "geosite:category-ads-all": "127.0.0.1"
-    },
-    "servers": [
-      {
-        "address": "https://1.1.1.1/dns-query",
-        "domains": ["geosite:geolocation-!cn"],
-        "expectIPs": ["geoip:!cn"]
+      "hosts": {
+        "dns.google": "8.8.8.8",
+        "dns.pub": "119.29.29.29",
+        "dns.alidns.com": "223.5.5.5",
+        "geosite:category-ads-all": "127.0.0.1"
       },
-      "8.8.8.8",
-      {
-        "address": "114.114.114.114",
-        "port": 53,
-        "domains": ["geosite:cn", "geosite:category-games@cn"],
-        "expectIPs": ["geoip:cn"],
-        "skipFallback": true
-      },
-      {
-        "address": "localhost",
-        "skipFallback": true
+      "servers": [
+        {
+          "address": "https://1.1.1.1/dns-query",
+          "domains": ["geosite:geolocation-!cn"],
+          "expectIPs": ["geoip:!cn"]
+        },
+        "8.8.8.8",
+        {
+          "address": "114.114.114.114",
+          "port": 53,
+          "domains": ["geosite:cn", "geosite:category-games@cn"],
+          "expectIPs": ["geoip:cn"],
+          "skipFallback": true
+        },
+        {
+          "address": "localhost",
+          "skipFallback": true
+        }
+       ]
       }
-     ]
     }
-  }
-
 
