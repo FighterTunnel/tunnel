@@ -1,0 +1,12 @@
+## Ubuntu 20.04
+
+deb http://us.archive.ubuntu.com/ubuntu/ focal main restricted
+deb http://us.archive.ubuntu.com/ubuntu/ focal-updates main restricted
+deb http://us.archive.ubuntu.com/ubuntu/ focal universe
+deb http://us.archive.ubuntu.com/ubuntu/ focal-updates universe
+deb http://us.archive.ubuntu.com/ubuntu/ focal multiverse
+deb http://us.archive.ubuntu.com/ubuntu/ focal-updates multiverse
+deb http://us.archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu focal-security main restricted
+deb http://security.ubuntu.com/ubuntu focal-security universe
+deb http://security.ubuntu.com/ubuntu focal-security multiverse

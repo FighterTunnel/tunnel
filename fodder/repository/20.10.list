@@ -1,0 +1,12 @@
+## Ubuntu 20.10
+
+deb http://us.archive.ubuntu.com/ubuntu/ groovy main restricted
+deb http://us.archive.ubuntu.com/ubuntu/ groovy-updates main restricted
+deb http://us.archive.ubuntu.com/ubuntu/ groovy universe
+deb http://us.archive.ubuntu.com/ubuntu/ groovy-updates universe
+deb http://us.archive.ubuntu.com/ubuntu/ groovy multiverse
+deb http://us.archive.ubuntu.com/ubuntu/ groovy-updates multiverse
+deb http://us.archive.ubuntu.com/ubuntu/ groovy-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu groovy-security main restricted
+deb http://security.ubuntu.com/ubuntu groovy-security universe
+deb http://security.ubuntu.com/ubuntu groovy-security multiverse
