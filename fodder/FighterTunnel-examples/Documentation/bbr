@@ -8,14 +8,14 @@ linux-base	linux-base/removing-running-kernel	boolean	false
 EOF
 
 optimizing_system() {
-	wget -O /etc/sysctl.conf "https://github.com/FighterTunnel/tunnel/raw/main/fodder/FighterTunnel-examples/Documentation/sysctl.conf" >/dev/null 2>&1
+	#wget -O /etc/sysctl.conf "https://github.com/FighterTunnel/tunnel/raw/main/fodder/FighterTunnel-examples/Documentation/sysctl.conf" >/dev/null 2>&1
 	sysctl -p
 	echo "*               soft    nofile           1000000
 *               hard    nofile          1000000" >/etc/security/limits.conf
 	echo "ulimit -SHn 1000000" >>/etc/profile
 }
 startbbr() {
-	remove_all
+	#remove_all
 	if [[ $(echo ${kernel_version} | awk -F'.' '{print $1}') -ge "5" ]]; then
 		echo "net.core.default_qdisc=cake" >>/etc/sysctl.conf
 		echo "net.ipv4.tcp_congestion_control=bbr" >>/etc/sysctl.conf
@@ -25,5 +25,6 @@ startbbr() {
 	fi
 	sysctl -p
 }
-apt-get --fix-broken install -y && apt-get autoremove -y
-optimizing_system
+startbbr
+#apt-get --fix-broken install -y && apt-get autoremove -y
+#optimizing_system
