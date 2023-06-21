@@ -94,4 +94,5 @@ startbbr(){
 	sysctl -p
 }
 #apt-get --fix-broken install -y && apt-get autoremove -y
+remove_all
 optimizing_system
