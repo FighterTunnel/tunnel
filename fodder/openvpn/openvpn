@@ -202,7 +202,7 @@ function input_cert_ovpn() {
     echo '</ca>' >>/etc/openvpn/ssl.ovpn
     cp /etc/openvpn/ssl.ovpn /var/www/html/ssl.ovpn
 }
-input_cert_ovpn
+
 cd /var/www/html/
 zip all-ovpn.zip tcp.ovpn udp.ovpn ssl.ovpn ws-ssl.ovpn >/dev/null 2>&1
 sed -i 's/#AUTOSTART="all"/AUTOSTART="all"/g' /etc/default/openvpn
@@ -221,3 +221,4 @@ sed -i $input_domain /etc/openvpn/udp.ovpn
 sed -i $input_domain /etc/openvpn/ssl.ovpn
 sed -i $input_domain /etc/openvpn/ws-ssl.ovpn
 sed -i $input_domain /var/www/html/index.html
+input_cert_ovpn
