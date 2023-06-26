@@ -1,0 +1,239 @@
+#!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
+OS=$(uname -m)
+ipsaya=$(wget -qO- ipinfo.io/ip)
+ipsaya2="s/xxxxxxxxx/$ipsaya/g"
+interface=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
+echo 'port 1194
+proto tcp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key
+dh dh.pem
+verify-client-cert none
+username-as-common-name
+plugin /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 8.8.8.8"
+push "dhcp-option DNS 8.8.4.4"
+push "route-method exe"
+push "route-delay 2"
+socket-flags TCP_NODELAY
+push "socket-flags TCP_NODELAY"
+keepalive 10 120
+comp-lzo
+user nobody
+group nogroup
+persist-key
+persist-tun
+management 127.0.0.1 5555
+status server-tcp.log
+log log-tcp.log
+verb 3
+ncp-disable
+cipher none
+auth none' >/etc/openvpn/server-tcp.conf
+
+echo 'port 2200
+proto udp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key
+dh dh.pem
+verify-client-cert none
+username-as-common-name
+plugin /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
+server 20.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 8.8.8.8"
+push "dhcp-option DNS 8.8.4.4"
+push "route-method exe"
+push "route-delay 2"
+socket-flags TCP_NODELAY
+push "socket-flags TCP_NODELAY"
+keepalive 10 120
+comp-lzo
+user nobody
+group nogroup
+persist-key
+persist-tun
+status server-udp.log
+log log-udp.log
+verb 3
+ncp-disable
+cipher none
+auth none' >/etc/openvpn/server-udp.conf
+
+cat >/etc/openvpn/tcp.ovpn <<-END
+auth-user-pass
+client
+dev tun
+proto tcp
+remote xxxxxxxxx 1194
+persist-key
+persist-tun
+pull
+resolv-retry infinite
+nobind
+user nobody
+comp-lzo
+remote-cert-tls server
+verb 3
+mute 2
+connect-retry 5 5
+connect-retry-max 8080
+mute-replay-warnings
+redirect-gateway def1
+script-security 2
+cipher none
+auth none
+END
+
+cat >/etc/openvpn/udp.ovpn <<-END
+auth-user-pass
+client
+dev tun
+proto udp
+remote xxxxxxxxx 2200
+persist-key
+persist-tun
+pull
+resolv-retry infinite
+nobind
+user nobody
+comp-lzo
+remote-cert-tls server
+verb 3
+mute 2
+connect-retry 5 5
+connect-retry-max 8080
+mute-replay-warnings
+redirect-gateway def1
+script-security 2
+cipher none
+auth none
+END
+
+cat >/etc/openvpn/ssl.ovpn <<-END
+auth-user-pass
+client
+dev tun
+proto tcp
+remote xxxxxxxxx 443
+persist-key
+persist-tun
+pull
+resolv-retry infinite
+nobind
+user nobody
+comp-lzo
+remote-cert-tls server
+verb 3
+mute 2
+connect-retry 5 5
+connect-retry-max 8080
+mute-replay-warnings
+redirect-gateway def1
+script-security 2
+cipher none
+auth none
+END
+
+cat >/etc/openvpn/ws-ssl.ovpn <<-END
+auth-user-pass
+client
+dev tun
+proto tcp
+remote xxxxxxxxx 443
+persist-key
+persist-tun
+pull
+resolv-retry infinite
+nobind
+user nobody
+comp-lzo
+remote-cert-tls server
+verb 3
+mute 2
+connect-retry 5 5
+connect-retry-max 8080
+mute-replay-warnings
+redirect-gateway def1
+script-security 2
+cipher none
+auth none
+END
+
+function cert_ovpn() {
+    wget --no-check-certificate -O /etc/openvpn/server.crt "https://github.com/FighterTunnel/tunnel/raw/main/fodder/openvpn/server.crt" >>/dev/null 2>&1
+    wget --no-check-certificate -O /etc/openvpn/server.key "https://github.com/FighterTunnel/tunnel/raw/main/fodder/openvpn/server.key" >>/dev/null 2>&1
+    wget --no-check-certificate -O /etc/openvpn/ca.crt "https://github.com/FighterTunnel/tunnel/raw/main/fodder/openvpn/ca.crt" >>/dev/null 2>&1
+    wget --no-check-certificate -O /etc/openvpn/dh.pem "https://github.com/FighterTunnel/tunnel/raw/main/fodder/openvpn/dh.pem" >>/dev/null 2>&1
+}
+cert_ovpn
+
+function input_cert_ovpn() {
+    echo '<ca>' >>/etc/openvpn/tcp.ovpn
+    cat /etc/openvpn/server/ca.crt >>/etc/openvpn/tcp.ovpn
+    echo '</ca>' >>/etc/openvpn/tcp.ovpn
+    cp /etc/openvpn/tcp.ovpn /var/www/html/tcp.ovpn
+
+    echo '<ca>' >>/etc/openvpn/udp.ovpn
+    cat /etc/openvpn/server/ca.crt >>/etc/openvpn/udp.ovpn
+    echo '</ca>' >>/etc/openvpn/udp.ovpn
+    cp /etc/openvpn/udp.ovpn /var/www/html/udp.ovpn
+
+    echo '<ca>' >>/etc/openvpn/ws-ssl.ovpn
+    cat /etc/openvpn/server/ca.crt >>/etc/openvpn/ws-ssl.ovpn
+    echo '</ca>' >>/etc/openvpn/ws-ssl.ovpn
+    cp /etc/openvpn/ws-ssl.ovpn /var/www/html/ws-ssl.ovpn
+
+    echo '<ca>' >>/etc/openvpn/ssl.ovpn
+    cat /etc/openvpn/server/ca.crt >>/etc/openvpn/ssl.ovpn
+    echo '</ca>' >>/etc/openvpn/ssl.ovpn
+    cp /etc/openvpn/ssl.ovpn /var/www/html/ssl.ovpn
+}
+input_cert_ovpn
+cd /var/www/html/
+zip all-ovpn.zip tcp.ovpn udp.ovpn ssl.ovpn ws-ssl.ovpn >/dev/null 2>&1
+cd
+cat <<'mySiteOvpn' >/var/www/html/index.html
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Simple OVPN Download site -->
+
+<head><meta charset="utf-8" /><title>OVPN Config Download</title><meta name="description" content="Server" /><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /><meta name="theme-color" content="#000000" /><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"><link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.3/css/mdb.min.css" rel="stylesheet"></head><body><div class="container justify-content-center" style="margin-top:9em;margin-bottom:5em;"><div class="col-md"><div class="view"><img src="https://openvpn.net/wp-content/uploads/openvpn.jpg" class="card-img-top"><div class="mask rgba-white-slight"></div></div><div class="card"><div class="card-body"><h5 class="card-title">Config List</h5><br /><ul class="list-group">
+
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>TCP <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/tcp.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>UDP <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/udp.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>SSL <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/ssl.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p> WS SSL <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/ws-ssl.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p> ALL.zip <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/all-ovpn.zip" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+
+</ul></div></div></div></div></body></html>
+mySiteOvpn
+
+sed -i "s|IP-ADDRESSS|$(curl -sS ifconfig.me)|g" /var/www/html/index.html
+cd
+systemctl daemon-reload
+service openvpn restart
+systemctl enable openvpn@server-tcp
+systemctl start openvpn@server-tcp
+systemctl enable openvpn@server-udp
+systemctl start openvpn@server-udp
+systemctl restart openvpn@server-tcp
+systemctl restart openvpn@server-udp
+sed -i $ipsaya2 /etc/openvpn/tcp.ovpn
+sed -i $ipsaya2 /etc/openvpn/udp.ovpn
+sed -i $ipsaya2 /etc/openvpn/ssl.ovpn
+sed -i $ipsaya2 /etc/openvpn/ws-ssl.ovpn
