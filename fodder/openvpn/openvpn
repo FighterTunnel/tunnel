@@ -4,6 +4,7 @@ OS=$(uname -m)
 ipsaya=$(wget -qO- ipinfo.io/ip)
 ipsaya2="s/xxxxxxxxx/$ipsaya/g"
 interface=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
+mkdir -p /usr/lib/openvpn/
 echo 'port 1194
 proto tcp
 dev tun
@@ -222,9 +223,11 @@ cat <<'mySiteOvpn' >/var/www/html/index.html
 
 </ul></div></div></div></div></body></html>
 mySiteOvpn
-
+cp /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so /usr/lib/openvpn/openvpn-plugin-auth-pam.so
 sed -i "s|IP-ADDRESSS|$(curl -sS ifconfig.me)|g" /var/www/html/index.html
+sed -i 's/#AUTOSTART="all"/AUTOSTART="all"/g' /etc/default/openvpn
 cd
+
 systemctl daemon-reload
 service openvpn restart
 systemctl enable openvpn@server-tcp
