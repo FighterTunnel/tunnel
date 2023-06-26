@@ -180,22 +180,22 @@ cert_ovpn
 
 function input_cert_ovpn() {
     echo '<ca>' >>/etc/openvpn/tcp.ovpn
-    cat /etc/openvpn/server/ca.crt >>/etc/openvpn/tcp.ovpn
+    cat /etc/openvpn/ca.crt >>/etc/openvpn/tcp.ovpn
     echo '</ca>' >>/etc/openvpn/tcp.ovpn
     cp /etc/openvpn/tcp.ovpn /var/www/html/tcp.ovpn
 
     echo '<ca>' >>/etc/openvpn/udp.ovpn
-    cat /etc/openvpn/server/ca.crt >>/etc/openvpn/udp.ovpn
+    cat /etc/openvpn/ca.crt >>/etc/openvpn/udp.ovpn
     echo '</ca>' >>/etc/openvpn/udp.ovpn
     cp /etc/openvpn/udp.ovpn /var/www/html/udp.ovpn
 
     echo '<ca>' >>/etc/openvpn/ws-ssl.ovpn
-    cat /etc/openvpn/server/ca.crt >>/etc/openvpn/ws-ssl.ovpn
+    cat /etc/openvpn/ca.crt >>/etc/openvpn/ws-ssl.ovpn
     echo '</ca>' >>/etc/openvpn/ws-ssl.ovpn
     cp /etc/openvpn/ws-ssl.ovpn /var/www/html/ws-ssl.ovpn
 
     echo '<ca>' >>/etc/openvpn/ssl.ovpn
-    cat /etc/openvpn/server/ca.crt >>/etc/openvpn/ssl.ovpn
+    cat /etc/openvpn/ca.crt >>/etc/openvpn/ssl.ovpn
     echo '</ca>' >>/etc/openvpn/ssl.ovpn
     cp /etc/openvpn/ssl.ovpn /var/www/html/ssl.ovpn
 }
