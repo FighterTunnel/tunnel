@@ -2,7 +2,8 @@
 export DEBIAN_FRONTEND=noninteractive
 OS=$(uname -m)
 ipsaya=$(wget -qO- ipinfo.io/ip)
-ipsaya2="s/xxxxxxxxx/$ipsaya/g"
+domain=$(cat /etc/xray/domain)
+input_domain="s/xxxxxxxxx/$domain/g"
 interface=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
 mkdir -p /usr/lib/openvpn/
 mkdir -p /var/www/html/
@@ -204,7 +205,7 @@ input_cert_ovpn
 cd /var/www/html/
 zip all-ovpn.zip tcp.ovpn udp.ovpn ssl.ovpn ws-ssl.ovpn >/dev/null 2>&1
 cd
-cat >/var/www/html/index.html<<EOF
+cat >/var/www/html/index.html <<EOF
 <!DOCTYPE html>
 <html lang="en">
 
@@ -212,20 +213,20 @@ cat >/var/www/html/index.html<<EOF
 
 <head><meta charset="utf-8" /><title>OVPN Config Download</title><meta name="description" content="Server" /><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" /><meta name="theme-color" content="#000000" /><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"><link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.3/css/mdb.min.css" rel="stylesheet"></head><body><div class="container justify-content-center" style="margin-top:9em;margin-bottom:5em;"><div class="col-md"><div class="view"><img src="https://openvpn.net/wp-content/uploads/openvpn.jpg" class="card-img-top"><div class="mask rgba-white-slight"></div></div><div class="card"><div class="card-body"><h5 class="card-title">Config List</h5><br /><ul class="list-group">
 
-<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>TCP <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/tcp.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>TCP <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://xxxxxxxxx:81/tcp.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
 
-<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>UDP <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/udp.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>UDP <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://xxxxxxxxx:81/udp.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
 
-<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>SSL <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/ssl.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p>SSL <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://xxxxxxxxx:81/ssl.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
 
-<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p> WS SSL <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/ws-ssl.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p> WS SSL <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://xxxxxxxxx:81/ws-ssl.ovpn" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
 
-<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p> ALL.zip <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://IP-ADDRESSS:81/all-ovpn.zip" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
+<li class="list-group-item justify-content-between align-items-center" style="margin-bottom:1em;"><p> ALL.zip <span class="badge light-blue darken-4">Android/iOS/PC/Modem</span><br /><small></small></p><a class="btn btn-outline-success waves-effect btn-sm" href="https://xxxxxxxxx:81/all-ovpn.zip" style="float:right;"><i class="fa fa-download"></i> Download</a></li>
 
 </ul></div></div></div></div></body></html>
 EOF
-cp /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so /usr/lib/openvpn/openvpn-plugin-auth-pam.so
-sed -i "s|IP-ADDRESSS|$(curl -sS ifconfig.me)|g" /var/www/html/index.html
+
+#sed -i "s|xxxxxxxxx|$(curl -sS ifconfig.me)|g" /var/www/html/index.html
 sed -i 's/#AUTOSTART="all"/AUTOSTART="all"/g' /etc/default/openvpn
 cd
 
@@ -237,7 +238,8 @@ systemctl enable openvpn@server-udp
 systemctl start openvpn@server-udp
 systemctl restart openvpn@server-tcp
 systemctl restart openvpn@server-udp
-sed -i $ipsaya2 /etc/openvpn/tcp.ovpn
-sed -i $ipsaya2 /etc/openvpn/udp.ovpn
-sed -i $ipsaya2 /etc/openvpn/ssl.ovpn
-sed -i $ipsaya2 /etc/openvpn/ws-ssl.ovpn
+sed -i $input_domain /etc/openvpn/tcp.ovpn
+sed -i $input_domain /etc/openvpn/udp.ovpn
+sed -i $input_domain /etc/openvpn/ssl.ovpn
+sed -i $input_domain /etc/openvpn/ws-ssl.ovpn
+sed -i $input_domain /var/www/html/index.html
