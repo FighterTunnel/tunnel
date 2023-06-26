@@ -201,12 +201,13 @@ function input_cert_ovpn() {
     cat /etc/openvpn/ca.crt >>/etc/openvpn/ssl.ovpn
     echo '</ca>' >>/etc/openvpn/ssl.ovpn
     cp /etc/openvpn/ssl.ovpn /var/www/html/ssl.ovpn
+    cd /var/www/html/
+    zip all-ovpn.zip tcp.ovpn udp.ovpn ssl.ovpn ws-ssl.ovpn >/dev/null 2>&1
+    sed -i 's/#AUTOSTART="all"/AUTOSTART="all"/g' /etc/default/openvpn
+    cd
 }
 
-cd /var/www/html/
-zip all-ovpn.zip tcp.ovpn udp.ovpn ssl.ovpn ws-ssl.ovpn >/dev/null 2>&1
-sed -i 's/#AUTOSTART="all"/AUTOSTART="all"/g' /etc/default/openvpn
-cd
+
 
 systemctl daemon-reload
 service openvpn restart
