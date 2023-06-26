@@ -56,7 +56,7 @@ optimizing_system(){
 	sed -i '/net.core.netdev_max_backlog/d' /etc/sysctl.conf
  	sed -i '/net.ipv4.tcp_slow_start_after_idle/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
-	echo "
+echo "
 # forward ipv4
 net.ipv4.ip_forward = 1
 net.ipv4.tcp_keepalive_time = 90
@@ -66,7 +66,17 @@ net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
 fs.file-max = 65535000
 " >> /etc/sysctl.conf
-	sysctl -p
+echo "
+* soft     nproc          65535
+* hard     nproc          65535
+* soft     nofile         65535
+* hard     nofile         65535
+root soft     nproc          65535
+root hard     nproc          65535
+root soft     nofile         65535
+root hard     nofile         65535
+" >> /etc/security/limits.conf
+sysctl -p
 	
 } 
 startbbr(){
