@@ -9,39 +9,39 @@ ETH=$(ip -o $ETH -4 route show to default | awk '{print $5}');
 :OUTPUT ACCEPT [0:0]
 
 # INPUT IP SERVER MANAGEMEN TCP CONNECT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10040 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10030 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 18020 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10015 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10012 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10011 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10008 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10007 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10006 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10005 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10004 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10003 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10002 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10001 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 10000 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 3128 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 1194 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 109 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 169 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 88 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 68 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10040 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10030 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 18020 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10015 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10012 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10011 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10008 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10007 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10006 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10005 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10004 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10003 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10002 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10001 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 10000 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 3128 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 1194 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 109 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 169 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 88 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 68 -j ACCEPT
 
 # INPUT IP SERVER MANAGEMEN UDP CONNECT
 -A INPUT -m state --state NEW -m udp -p udp --dport 53 -j ACCEPT
 -A INPUT -m state --state NEW -m udp -p udp --dport 2200 -j ACCEPT
 -A INPUT -m state --state NEW -m udp -p udp --dport 5300 -j ACCEPT
--A INPUT -m state --state NEW -m udp -p udp --dport 5300 -j ACCEPT
--A INPUT -m state --state NEW -m udp -p udp --dport 7100 -j ACCEPT
--A INPUT -m state --state NEW -m udp -p udp --dport 7200 -j ACCEPT
--A INPUT -m state --state NEW -m udp -p udp --dport 7300 -j ACCEPT
+#-A INPUT -m state --state NEW -m udp -p udp --dport 5300 -j ACCEPT
+#-A INPUT -m state --state NEW -m udp -p udp --dport 7100 -j ACCEPT
+#-A INPUT -m state --state NEW -m udp -p udp --dport 7200 -j ACCEPT
+#-A INPUT -m state --state NEW -m udp -p udp --dport 7300 -j ACCEPT
 
 # INPUT IP SERVER MANAGEMEN TORRENT DISCONNECT
 -A FORWARD -m string --string "BitTorrent" --algo bm --to 65535 -j DROP
@@ -77,6 +77,9 @@ COMMIT
 -A PREROUTING -i $ETH -p udp -m udp --dport 53 -j REDIRECT --to-ports 5300
 -A POSTROUTING -s 10.7.0.0/24 -o $ETH -j MASQUERADE
 -A POSTROUTING -s 10.6.0.0/24 -o $ETH -j MASQUERADE
+-A POSTROUTING -s 10.8.0.0/24 -o $ETH -j MASQUERADE
+-A POSTROUTING -s 20.8.0.0/24 -o $ETH -j MASQUERADE
+
 
 COMMIT
 # Completed on Thu Dec 29 03:14:18 2022
