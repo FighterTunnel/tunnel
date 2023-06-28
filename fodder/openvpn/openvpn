@@ -7,6 +7,7 @@ input_domain="s/xxxxxxxxx/$domain/g"
 interface=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
 mkdir -p /usr/lib/openvpn/
 mkdir -p /var/www/html/
+apt install -y tmux 
 echo 'port 1194
 proto tcp
 dev tun
