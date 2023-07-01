@@ -58,13 +58,13 @@ optimizing_system(){
 	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
 echo "
 # forward ipv4
-net.ipv4.ip_forward = 1
-net.ipv4.tcp_keepalive_time = 90
-net.ipv4.ip_local_port_range = 1024 65535
-net.ipv4.tcp_fastopen = 3
+net.ipv4.ip_forward=1
+net.ipv4.tcp_keepalive_time=90
+net.ipv4.ip_local_port_range=1024 65535
+net.ipv4.tcp_fastopen=3
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
-fs.file-max = 65535000
+fs.file-max=65535000
 " >> /etc/sysctl.conf
 
 sysctl -p
