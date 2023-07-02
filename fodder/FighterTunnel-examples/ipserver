@@ -71,7 +71,5 @@ COMMIT
 # Completed on Sun Jul  2 20:48:30 2023
 
 END
-
-netfilter-persistent save
 netfilter-persistent reload
 systemctl restart netfilter-persistent
