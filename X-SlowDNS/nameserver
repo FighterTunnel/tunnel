@@ -1,10 +1,10 @@
 #!/bin/sh
 GIT_CMD="https://github.com/FighterTunnel/tunnel/raw/main/"
 ns_domain_cloudflare() {
-	DOMAIN="dnsft.net"
+	DOMAIN="dnstt.me"
 	DAOMIN=$(cat /etc/xray/domain)
 	SUB=$(tr </dev/urandom -dc a-z0-9 | head -c7)
-	SUB_DOMAIN=${SUB}."dnsft.net"
+	SUB_DOMAIN=${SUB}."dnstt.me"
 	NS_DOMAIN=${SUB_DOMAIN}
 	CF_ID=nuryahyamuhaimin@gmail.com
         CF_KEY=9dd2f30c099dbcf541cbd5c188d61ce060cf7
