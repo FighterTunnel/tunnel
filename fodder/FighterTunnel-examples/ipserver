@@ -6,7 +6,6 @@ cat >/etc/iptables/rules.v4 <<-END
 :INPUT ACCEPT [1423:15108189]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [1407:131528]
--A INPUT -p udp -m udp --dport 5300 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 10015 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 10012 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 10011 -j ACCEPT
@@ -31,7 +30,6 @@ cat >/etc/iptables/rules.v4 <<-END
 -A INPUT -p udp -m udp --dport 53 -j ACCEPT
 -A INPUT -p udp -m udp --dport 2200 -j ACCEPT
 -A INPUT -p udp -m udp --dport 2100 -j ACCEPT
--A INPUT -p udp -m udp --dport 5300 -j ACCEPT
 -A INPUT -p udp -m udp --dport 5300 -j ACCEPT
 -A INPUT -p udp -m udp --dport 7100 -j ACCEPT
 -A INPUT -p udp -m udp --dport 7200 -j ACCEPT
@@ -65,7 +63,6 @@ COMMIT
 :INPUT ACCEPT [18:1004]
 :POSTROUTING ACCEPT [79:4815]
 :OUTPUT ACCEPT [79:4815]
--A PREROUTING -p udp -m udp --dport 53 -j REDIRECT --to-ports 5300
 -A PREROUTING -i $interface -p udp -m udp --dport 53 -j REDIRECT --to-ports 5300
 -A POSTROUTING -s 10.8.0.0/24 -o $interface -j MASQUERADE
 -A POSTROUTING -s 20.8.0.0/24 -o $interface -j MASQUERADE
