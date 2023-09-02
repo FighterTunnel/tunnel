@@ -6,7 +6,7 @@ if sys.argv[1:]:
   LISTENING_PORT = sys.argv[1]
 else:
   LISTENING_PORT = 10015  
-#Pass
+#Passwd
 PASS = ''
 
 # CONST
