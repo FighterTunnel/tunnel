@@ -1,0 +1,128 @@
+{
+  "stats": {},
+    "api": {
+      "tag": "api",
+      "services": [
+        "StatsService"
+    ]
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserUplink": true,
+        "statsUserDownlink": true
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true,
+      "statsOutboundUplink": true,
+      "statsOutboundDownlink": true
+    }
+  },
+  "log": {
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log",
+    "loglevel": "debug"
+  },
+  "inbounds": [
+    {
+     "listen": "127.0.0.1",
+     "port": "10001",
+     "protocol": "vless",
+      "settings": {
+          "decryption":"none",
+            "clients": [
+               {
+                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#vless
+             }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+            "path": "/vless"
+          }
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": ["http", "tls"]
+        }
+      },
+      {
+        "listen": "127.0.0.1",
+        "port": "10005",
+        "protocol": "vless",
+        "settings": {
+         "decryption":"none",
+           "clients": [
+             {
+               "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#vlessgrpc
+             }
+          ]
+        },
+        "streamSettings": {
+           "network": "grpc",
+           "grpcSettings": {
+               "serviceName": "vless-grpc"
+           }
+         },
+         "sniffing": {
+           "enabled": true,
+           "destOverride": ["http", "tls"]
+         }
+       },
+       {
+         "listen": "127.0.0.1",
+         "port": 20002,
+         "protocol": "dokodemo-door",
+         "settings": {
+           "address": "127.0.0.1"
+         },
+         "tag": "api"
+       }
+     ],
+  "outbounds": [
+     {
+       "protocol": "freedom",
+       "settings": {}
+     },
+     {
+       "protocol": "blackhole",
+       "settings": {},
+       "tag": "block"
+     }
+   ],
+   "routing": {
+     "rules": [
+       {
+         "type": "field",
+         "ip": [
+           "10.0.0.0/8",
+           "100.64.0.0/10",
+           "169.254.0.0/16",
+           "172.16.0.0/12",
+           "192.0.0.0/24",
+           "192.0.2.0/24",
+           "192.168.0.0/16",
+           "198.18.0.0/15",
+           "198.51.100.0/24",
+           "203.0.113.0/24",
+           "::1/128",
+           "fc00::/7",
+           "fe80::/10"
+         ],
+         "outboundTag": "block"
+       },
+       {
+         "inboundTag": [
+           "api"
+         ],
+         "outboundTag": "api",
+         "type": "field"
+       }
+     ]
+   }
+ }
