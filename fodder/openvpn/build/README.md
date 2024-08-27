@@ -47,22 +47,26 @@ source ./vars
 ### Langkah 6: Buat permintaan sertifikat untuk server
 
 ```
-./easyrsa gen-req yha.my.id nopass```
+./easyrsa gen-req yha.my.id nopass
+```
 
 ### Langkah 7: Tanda tangani permintaan sertifikat server
 
 ```
-./easyrsa sign-req server yha.my.id```
+./easyrsa sign-req server yha.my.id
+```
 
 ### Langkah 8: Buat Diffie-Hellman
 
-```bash
-./easyrsa gen-dh```
+```
+./easyrsa gen-dh
+```
 
 ### Langkah 9: Salin sertifikat yang sudah jadi
 
-```bash
-sudo cp pki/ca.crt pki/issued/yha.my.id.crt pki/private/yha.my.id.key pki/dh.pem /etc/openvpn/```
+```
+sudo cp pki/ca.crt pki/issued/yha.my.id.crt pki/private/yha.my.id.key pki/dh.pem /etc/openvpn/
+```
 
 ### Langkah 10: Ganti nama sertifikat dan kunci di folder /etc/openvpn
 
