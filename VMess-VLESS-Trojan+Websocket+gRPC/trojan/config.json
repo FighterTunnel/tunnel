@@ -1,0 +1,129 @@
+{
+  "stats": {},
+    "api": {
+      "tag": "api",
+      "services": [
+        "StatsService"
+    ]
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserUplink": true,
+        "statsUserDownlink": true
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true,
+      "statsOutboundUplink": true,
+      "statsOutboundDownlink": true
+    }
+  },
+  "log": {
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log",
+    "loglevel": "debug"
+  },
+  "inbounds": [
+       {
+      "listen": "127.0.0.1",
+      "port": "10003",
+      "protocol": "trojan",
+      "settings": {
+          "decryption":"none",
+           "clients": [
+              {
+                 "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojan
+              }
+          ],
+         "udp": true
+        },
+        "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+            "path": "/trojan-ws"
+          }
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": ["http", "tls"]
+        }
+      },
+     {
+        "listen": "127.0.0.1",
+        "port": "10007",
+        "protocol": "trojan",
+        "settings": {
+          "decryption":"none",
+             "clients": [
+               {
+                 "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+#trojangrpc
+               }
+           ]
+          },
+          "streamSettings": {
+             "network": "grpc",
+             "grpcSettings": {
+                 "serviceName": "trojan-grpc"
+             }
+           },
+           "sniffing": {
+             "enabled": true,
+             "destOverride": ["http", "tls"]
+           }
+         },
+         {
+          "listen": "127.0.0.1",
+          "port": 20003,
+          "protocol": "dokodemo-door",
+          "settings": {
+            "address": "127.0.0.1"
+          },
+          "tag": "api"
+        }
+      ],
+   "outbounds": [
+      {
+        "protocol": "freedom",
+        "settings": {}
+      },
+      {
+        "protocol": "blackhole",
+        "settings": {},
+        "tag": "block"
+      }
+    ],
+    "routing": {
+      "rules": [
+        {
+          "type": "field",
+          "ip": [
+            "10.0.0.0/8",
+            "100.64.0.0/10",
+            "169.254.0.0/16",
+            "172.16.0.0/12",
+            "192.0.0.0/24",
+            "192.0.2.0/24",
+            "192.168.0.0/16",
+            "198.18.0.0/15",
+            "198.51.100.0/24",
+            "203.0.113.0/24",
+            "::1/128",
+            "fc00::/7",
+            "fe80::/10"
+          ],
+          "outboundTag": "block"
+        },
+        {
+          "inboundTag": [
+            "api"
+          ],
+          "outboundTag": "api",
+          "type": "field"
+        }
+      ]
+    }
+  }
