@@ -19,51 +19,60 @@ Unggah file easy3.zip ke VPS Anda.
 
 ### Langkah 2: Ekstrak file
 
-bash
+```
 unzip easy3.zip
+```
 
 ### Langkah 3: Masuk ke direktori easy3
-
-bash
+```
 cd easy3
+```
 
 ### Langkah 4: Sumberkan variabel
 
-bash
+```
 source ./vars
+```
 
 ### Langkah 5: Inisialisasi PKI dan buat CA
 
-bash
+```
 ./easyrsa init-pki
+```
+
+```
 ./easyrsa --req-cn=yha.my.id build-ca nopass
+```
 
 ### Langkah 6: Buat permintaan sertifikat untuk server
 
-bash
-./easyrsa gen-req yha.my.id nopass
+```
+./easyrsa gen-req yha.my.id nopass```
 
 ### Langkah 7: Tanda tangani permintaan sertifikat server
 
-bash
-./easyrsa sign-req server yha.my.id
+```
+./easyrsa sign-req server yha.my.id```
 
 ### Langkah 8: Buat Diffie-Hellman
 
-bash
-./easyrsa gen-dh
+```bash
+./easyrsa gen-dh```
 
 ### Langkah 9: Salin sertifikat yang sudah jadi
 
-bash
-sudo cp pki/ca.crt pki/issued/yha.my.id.crt pki/private/yha.my.id.key pki/dh.pem /etc/openvpn/
+```bash
+sudo cp pki/ca.crt pki/issued/yha.my.id.crt pki/private/yha.my.id.key pki/dh.pem /etc/openvpn/```
 
 ### Langkah 10: Ganti nama sertifikat dan kunci di folder /etc/openvpn
 
-bash
+```
 cd /etc/openvpn
+```
+```
 mv yha.my.id.crt server.crt
 mv yha.my.id.key server.key
+```
 
 ### Langkah 11: Ambil file sertifikat yang sudah jadi
 
