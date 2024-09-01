@@ -3,10 +3,10 @@ import socket, threading, select, signal, sys, time, getopt
 # Listen
 LISTENING_ADDR = '0.0.0.0'
 if sys.argv[1:]:
-  LISTENING_PORTS = [int(port) for port in sys.argv[1].split(',')]
+    LISTENING_PORTS = [int(port) for port in sys.argv[1].split(',')]
 else:
-  LISTENING_PORTS = [10015]
-#Passwd
+    LISTENING_PORTS = [10015]
+# Passwd
 PASS = ''
 
 # CONST
@@ -139,7 +139,8 @@ class ConnectionHandler(threading.Thread):
             self.server.printLog(self.log)
             pass
         finally:
-            self.client.sendall(RESPONSE.encode())
+            if not self.clientClosed:
+                self.client.sendall(RESPONSE.encode())
             self.close()
             self.server.removeConn(self)
 
@@ -164,7 +165,7 @@ class ConnectionHandler(threading.Thread):
             port = int(host[i+1:])
             host = host[:i]
         else:
-            if self.method=='CONNECT':
+            if self.method == 'CONNECT':
                 port = 443
             else:
                 port = sys.argv[1]
@@ -228,7 +229,7 @@ def parse_args(argv):
     global LISTENING_PORTS
     
     try:
-        opts, args = getopt.getopt(argv,"hb:p:",["bind=","port="])
+        opts, args = getopt.getopt(argv, "hb:p:", ["bind=", "port="])
     except getopt.GetoptError:
         print_usage()
         sys.exit(2)
