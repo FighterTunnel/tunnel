@@ -129,7 +129,7 @@ install_kernel() {
 
 
 install_bbr() {
-    check_bbr_status && _info "TCP BBR has already been enabled. nothing to do..." && exit 0
+    check_bbr_status && _info "TCP BBR has already been enabled. nothing to do..."
     check_kernel_version && _info "The kernel version is greater than 4.9, directly setting TCP BBR..." && sysctl_config && _info "Setting TCP BBR completed..."
     check_os
     install_kernel
