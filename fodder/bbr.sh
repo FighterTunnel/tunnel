@@ -9,8 +9,6 @@
 # URL: https://teddysun.com/489.html
 #
 
-cur_dir="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
-
 print_color() {
     local color_code="$1"
     local message="$2"
@@ -142,7 +140,6 @@ arch=$(uname -m)
 lbit=$(getconf LONG_BIT)
 kern=$(uname -r)
 
-clear
 echo "---------- System Information ----------"
 echo " OS      : $opsy"
 echo " Arch    : $arch ($lbit Bit)"
@@ -154,4 +151,4 @@ echo " URL: https://teddysun.com/489.html"
 echo "----------------------------------------"
 echo
 
-install_bbr 2>&1 | tee ${cur_dir}/install_bbr.log
+install_bbr 2>&1 | tee /etc/xray/install_bbr.log
